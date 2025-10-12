@@ -37,19 +37,16 @@
 
 </div>
 <style>
-    #header-extension {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.2s ease;
-    display: block; 
+    #gray-on-screen
+    {
+        display: none;
+    }
+    #header-extension
+    {
+        display: none;
     }
 
-    #header-extension.show {
-        max-height: 200px; 
-    }
-
-
-    @media(max-width: 800px)
+    @media(max-width: 768px)
     {
         #gray-on-screen
         {
@@ -86,7 +83,7 @@
 
     window.onresize = function () 
     { 
-    if(window.innerWidth > 800) {
+    if(window.innerWidth > 768) {
             optionsHeader.style.display = "none";
             headerMobile.style.display = "none";
             optionsHeader.style.display = "flex";
@@ -105,7 +102,7 @@
     }
     window.onload = function () 
     { 
-        if(window.innerWidth > 800) {
+        if(window.innerWidth > 768) {
             optionsHeader.style.display = "none";
             headerMobile.style.display = "none";
             optionsHeader.style.display = "flex";
@@ -124,7 +121,7 @@
     hamb.addEventListener('click', function () {
         hamb.style.display = "none";
         close.style.display = "block"; 
-        header_ext.classList.add('show');
+        header_ext.style.display = "block";
         grayOnScreen.display = "block";
         logo.display = "block";
         grayOnScreen.setAttribute('class', 'bg-[rgba(0,0,0,0.6)] w-full h-full absolute z-1');
@@ -135,7 +132,7 @@
     close.addEventListener('click', function () {
         close.style.display = "none";
         hamb.style.display = "block"; 
-        header_ext.classList.remove('show');
+        header_ext.style.display = "none";
         grayOnScreen.display = "none";
         append.setAttribute('class', '');
         grayOnScreen.remove();

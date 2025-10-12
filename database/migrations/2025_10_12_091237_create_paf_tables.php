@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('feeder', function (Blueprint $table) {
             $table->id()->primary();
-            $table->integer('id_user');
+            $table->integer('id_user')->nullable(true);
             $table->string('nome');
             $table->string('status');
         });

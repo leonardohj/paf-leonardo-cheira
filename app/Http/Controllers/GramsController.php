@@ -6,28 +6,36 @@ use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use App\Models\Schedule;
 use Illuminate\Validation\Validator;
+use Illuminate\Support\Facades\DB;
 
 class GramsController extends Controller
 {
     public function index(Request $request)
     {
+        $feeder = DB::table('feeder')->where('id_user', '1')->first();
+        if(empty($feeder))
+        {
+            session(['FeederAssociated' => false]);
+        }
         return view('index');
     }
 
-    public function store(Request $request, Schedule $schedule): JsonResponse
-    {
-        $validated = $request->validate([
-            'id_feeder' => 'required|integer',
-            'time' => 'required',
-        ]);
+public function store(Request $request): JsonResponse
+{
+    $validated = $request->validate([
+        'id_feeder' => 'required|integer|exists:feeder,id',
+        'time' => 'required|date_format:H:i',
+    ]);
 
+    try {
+        $schedule = Schedule::create($validated);
 
-        try {
-            $schedule = Schedule::create($validated);
-        } catch (Exception $e) {
-            echo $e;
-        }
-
-        return response()->json($schedule, 200, [], JSON_PRETTY_PRINT);
+        return response()->json($schedule, 201, [], JSON_PRETTY_PRINT);
+    } catch (\Exception $e) {
+        return response()->json([
+            'error' => 'Failed to create schedule.',
+            'message' => $e->getMessage()
+        ], 500);
     }
+}
 }

@@ -7,11 +7,17 @@
     @vite('resources/css/app.css')
     <title>paf</title>
 </head>
+@if(empty($errors))
+<div class="text-red-500">
+{{ $errors }}
+</div>
+@endif
+
 <div id="append">
     <x-header/>
 </div>
 <body>
-    <div class="p-4">
+    <div class="p-4 flex flex-col items-center">
         @yield('body')
     </div>
 </body>
