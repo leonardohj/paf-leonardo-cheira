@@ -37,14 +37,17 @@
 
 </div>
 <style>
-    #gray-on-screen
-    {
-        display: none;
+    #header-extension {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.2s ease;
+    display: block; 
     }
-    #header-extension
-    {
-        display: none;
+
+    #header-extension.show {
+        max-height: 200px; 
     }
+
 
     @media(max-width: 800px)
     {
@@ -121,7 +124,7 @@
     hamb.addEventListener('click', function () {
         hamb.style.display = "none";
         close.style.display = "block"; 
-        header_ext.style.display = "block";
+        header_ext.classList.add('show');
         grayOnScreen.display = "block";
         logo.display = "block";
         grayOnScreen.setAttribute('class', 'bg-[rgba(0,0,0,0.6)] w-full h-full absolute z-1');
@@ -132,7 +135,7 @@
     close.addEventListener('click', function () {
         close.style.display = "none";
         hamb.style.display = "block"; 
-        header_ext.style.display = "none";
+        header_ext.classList.remove('show');
         grayOnScreen.display = "none";
         append.setAttribute('class', '');
         grayOnScreen.remove();
