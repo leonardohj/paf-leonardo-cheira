@@ -11,19 +11,22 @@ class GramsController extends Controller
 {
     public function index(Request $request)
     {
-        return view('welcome');
+        return view('index');
     }
 
     public function store(Request $request, Schedule $schedule): JsonResponse
     {
         $validated = $request->validate([
-            'id_feeder' => 'required|int',
-            'date'   => 'required|string',
+            'id_feeder' => 'required|integer',
+            'time' => 'required',
         ]);
 
-        $schedule = Schedule::create($validated);
 
-        
+        try {
+            $schedule = Schedule::create($validated);
+        } catch (Exception $e) {
+            echo $e;
+        }
 
         return response()->json($schedule, 200, [], JSON_PRETTY_PRINT);
     }
