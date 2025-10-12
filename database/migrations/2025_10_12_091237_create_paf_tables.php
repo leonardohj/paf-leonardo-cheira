@@ -21,7 +21,7 @@ return new class extends Migration
         Schema::create('schedule', function (Blueprint $table) {
             $table->id()->primary();
             $table->integer('id_feeder');
-            $table->time('time')->default('00:00');
+            $table->time('time')->default('00:00:00');
         });
 
         Schema::create('fodder', function (Blueprint $table) {
