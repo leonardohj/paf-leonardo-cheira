@@ -1,146 +1,70 @@
-<div id="container-header" class="flex flex-row bg-gray-200 px-2 py-4 justify-between items-center rounded-2xl rounded-t-none z-50">
-        
-    <div id="" class="flex justify-center items-center gap-3">  
-        <div id="header-mobile" class="hidden flex justify-center items-center gap-3">
-            <div class="" id="hamburguer" style="">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-13">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-                </svg>
+<div class="flex flex-col ">
+    <!-- Header -->
+    <div id="mainHeader" class="h-16 flex items-center px-3 bg-gray-50">
+        <div class="text-black flex items-center">
+            <div class="p-3 rounded-full hover:bg-gray-100 cursor-pointer" id="sidebar-toggle">
+                <x-radix-hamburger-menu class="w-8 h-8"/>
             </div>
-            <div id="close" class="">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-13">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
-                </svg>
+            <img src="{{ asset('img/logo_paf.png') }}" alt="" class="h-8 lg:h-12">
+        </div>
+
+        <div class="flex-1"></div>
+
+        <div>
+            <div class="flex flex-row items-center gap-2">
+                <div id="plusHeader" class="p-3 rounded-full hover:bg-gray-100">
+                    <x-radix-plus class="w-6 h-6"/>
+                </div>
+                <div id="userImage" class="cursor-pointer text-white rounded-full h-10 w-10 bg-gray-600 flex justify-center items-center">
+                    U
+                </div>
+
+                <div id="userInfo" class="absolute hidden">
+                    <div class="fixed m-3 gap-3 right-0 top-16 p-4 w-full max-w-sm lg:max-w-lg bg-white shadow-sm rounded-xl">
+                       <div class="relative flex font-semibold justify-center items-center">
+                            <div class="text-center w-full">
+                                email da conta
+                            </div>
+                            <div onclick="closeUserInfo()" 
+                                class="absolute right-0 top-1/2 -translate-y-1/2 cursor-pointer">
+                                <x-radix-cross-2 class="h-6 w-6" />
+                            </div>
+                        </div>
+                        <div class="flex justify-center items-center">
+                            <div class="text-white text-xl rounded-full h-20 w-20 my-2 bg-gray-600 flex justify-center items-center">
+                                U
+                            </div>
+                        </div>
+                        <div class="text-lg text-center">
+                            Olá, $nomedoutilizador
+                        </div>
+                        <div class="mt-3 rounded-xl bg-gray-200 text-center py-2 cursor-pointer hover:bg-gray-300 transition-all duration-300">
+                            Sair da conta
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
-        <div id="logo" class="text-xl flex gap-2">
-            <img height="60px" width="300px" src="{{asset('img/logo_paf.png')}}" alt="logo">
-        </div>
-    </div>
-
-    <div id="options" class="flex gap-4">
-        <div>
-            <a href="">Dashboard</a>
-        </div>
-        <div>
-            <a href="">placeholder</a>
-        </div>
-    </div>
-
-    <div id="header-extension" class="flex grow justify-center items-center bg-gray-200 py-[10px] z-10">
-        <div class="w-screen py-2 flex items-center justify-center hover:bg-black hover:text-white duration-300 ease-in-out">
-            <a href="">Dashboard</a>
         </div>
     </div>
 </div>
-<div id="append">
 
-</div>
-<style>
-    #gray-on-screen
-    {
-        display: none;
-    }
-    #header-extension
-    {
-        display: none;
-    }
-
-    @media(max-width: 768px)
-    {
-        #gray-on-screen
-        {
-            display: block;
-            z-index: 50;
-        }
-        #hamburguer
-        {
-            display: block;
-        }
-        #options
-        {
-            display: none;
-        }
-        #container-header
-        {
-            justify-content: center;
-            flex-direction: column;
-        }
-    }
-</style>
+<x-modal/>
 
 <script>
-    let hamb = document.getElementById('hamburguer');
-    let close = document.getElementById('close');
-    let header_ext = document.getElementById('header-extension');
-    let logo = document.getElementById('logo');
-    let body = document.getElementsByTagName('body');
-    let grayOnScreen = document.createElement("div");
-    let optionsHeader = document.getElementById('options');
-    let headerMobile = document.getElementById('header-mobile');
-    let containerHeader = document.getElementById('container-header');
-    let append = document.getElementById('append');
+    const buttonPlusHeader = document.getElementById('plusHeader');
+    const userInfo = document.getElementById('userInfo');
+    const userImage = document.getElementById('userImage');
 
-    window.onresize = function () 
-    { 
-    if(window.innerWidth > 768) {
-            optionsHeader.style.display = "none";
-            headerMobile.style.display = "none";
-            optionsHeader.style.display = "flex";
-            containerHeader.style.justifyContent = "space-between";
-            close.click();
-        }
-        else
-        {
-            optionsHeader.style.display = "block";
-            headerMobile.style.display = "block";
-            optionsHeader.style.display = "none";
-            hamb.style.display = "block";
-            close.style.display = "none";
-            containerHeader.style.justifyContent = "center";
-        }
-    }
-    window.onload = function () 
-    { 
-        if(window.innerWidth > 768) {
-            optionsHeader.style.display = "none";
-            headerMobile.style.display = "none";
-            optionsHeader.style.display = "flex";
-        }
-        else
-        {
-            optionsHeader.style.display = "block";
-            headerMobile.style.display = "block";
-            optionsHeader.style.display = "none";
-            hamb.style.display = "block";
-            close.style.display = "none";
-            containerHeader.style.justifyContent = "center";
-        }
+    userImage.addEventListener('click', openUserInfo);
+    buttonPlusHeader.addEventListener('click', openModalAssociateFeeder);
+
+    function openUserInfo() {
+        // Mostra o menu se estiver escondido
+        userInfo.classList.toggle('hidden');
     }
 
-    hamb.addEventListener('click', function () {
-        hamb.style.display = "none";
-        close.style.display = "block"; 
-        header_ext.style.display = "block";
-        grayOnScreen.display = "block";
-        logo.display = "block";
-        grayOnScreen.setAttribute('class', 'bg-[rgba(0,0,0,0.6)] w-full h-full absolute z-1');
-        append.setAttribute('class', 'bg-[rgba(0,0,0,0.6)]');
-        append.append(grayOnScreen);
-    });
-
-    close.addEventListener('click', function () {
-        close.style.display = "none";
-        hamb.style.display = "block"; 
-        header_ext.style.display = "none";
-        grayOnScreen.display = "none";
-        append.setAttribute('class', '');
-        grayOnScreen.remove();
-    });
-
-    grayOnScreen.addEventListener('click', function () {
-        close.click();
-    });
-
-
+    function closeUserInfo() {
+        // Esconde o menu
+        userInfo.classList.add('hidden');
+    }
 </script>
