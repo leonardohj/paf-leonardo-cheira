@@ -11,10 +11,10 @@
   text-xs md:text-sm py-1.5 md:py-2 px-4 md:px-5 lg:px-6">
   Buy our product
 </div>
-<a href="/sign-in">
+<a href="{{ route('login') }}">
 <div class="font-semibold cursor-pointer rounded-full transition-all duration-300 ease-in-out text-center bg-gray-900 text-white hover:bg-gray-800 
   text-xs md:text-sm py-1.5 md:py-2 px-4 md:px-5 lg:px-6">
-  Sign in
+  Log in
 </div>
 </a>
     </div>

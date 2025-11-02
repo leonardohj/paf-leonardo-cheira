@@ -10,13 +10,8 @@
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
 </head>
 <body class="min-h-screen flex flex-col">
-    <!-- Header -->
     <x-header />
-
-    <!-- Main Layout -->
     <div class="min-h-0 flex-1 flex ">
-        
-        <!-- Sidebar -->
         <div id="sidebar" class="hidden md:flex flex-col justify-start items-center pt-3 pb-2 bg-gray-50 px-4 gap-y-6 w-16 hover:w-56 transition-all not-hover:duration-1000 duration-600 not-hover:w-16 ease-in-out group">
         <div class="sidebar-item not-hover:duration-1000 flex items-center w-12 hover:bg-gray-200 rounded-full px-2 py-2 transition-all duration-300 ease-in-out group-hover:w-full overflow-hidden cursor-pointer">
             <x-mdi-home-outline class="h-8 w-8 flex-shrink-0" />
@@ -45,7 +40,6 @@
 
         </div>
 
-        <!-- Main Content -->
         <div class="flex flex-col flex-1 h-full">
             <div class="hidden md:block bg-gray-50 w-full">
                 <div class="bg-white h-5 rounded-tl-full"></div>

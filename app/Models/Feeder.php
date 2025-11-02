@@ -18,6 +18,7 @@ class Feeder extends Model
     protected $fillable = [
         'id_user',
         'nome',
-        'status',
+        'code'
     ];
+    public $timestamps = false;
 }

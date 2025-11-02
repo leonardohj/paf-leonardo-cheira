@@ -10,7 +10,7 @@
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
 </head>
 <body class="h-full m-0 flex flex-col">
-    <header class=" mb-4">
+    <header class="mb-4">
         <x-header2/>
     </header>
 

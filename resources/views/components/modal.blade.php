@@ -19,20 +19,21 @@
       Insere o ID do alimentador que queres associar à tua conta.
     </p>
     
-    <!-- Input -->
     <div class="relative mb-6 mx-auto md:mx-0">
-
+      <form action="{{ route('feeder.linkUser') }}" method="POST">
+        @csrf
       <span class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 text-lg">🔗</span>
-      <input type="text" placeholder="ID do alimentador"
+      <input name="code" type="text" placeholder="ID do alimentador"
              class="w-full pl-12 pr-4 py-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black transition text-gray-900 placeholder-gray-400"/>
-    </div>
+      </div>
+      
     
-    <!-- Submit Button -->
     <div class="mx-auto md:mx-0">
       <button class="bg-black hover:bg-gray-900 transition-all duration-300 text-white font-semibold px-6 py-4 rounded-lg w-full transform">
         Associar
       </button>
     </div>
+    </form>
   </div>
 </div>
 

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id()->primary();
             $table->integer('id_user')->nullable(true);
             $table->string('nome');
-            $table->string('status');
+            $table->string('code');
         });
 
         Schema::create('schedule', function (Blueprint $table) {
@@ -36,7 +36,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        //
+        Schema::dropIfExists('fodder');
+        Schema::dropIfExists('feeder');
+        Schema::dropIfExists('schedule');
     }
 };
 

@@ -1,0 +1,166 @@
+@extends('layouts.auth')
+
+@section('body')
+    <section class="flex flex-col items-center text-center px-4 sm:px-8 md:px-16 lg:px-32 lg:mt-20 mb-16 lg:mb-32 space-y-6">
+        <div id="img-page">
+            <img src="{{ asset('img/logo_paf.png') }}" alt="PAF Logo" class="h-12 lg:h-16">
+        </div>
+        <div class="main-title-page">
+            <h1 id="title-of-page" class="text-3xl sm:text-4xl lg:text-6xl font-bold text-gray-900 leading-tight mb-2">
+                Where technology and pet care come together
+            </h1>
+            <p id="bottom-text-title-page" class="text-gray-600 sm:text-lg lg:text-xl max-w-4xl mx-auto">
+                Pet Feeder helps pet owners create convenient feeding schedules they can personalize, manage, and monitor. By combining a web application with an automated device, it empowers owners to ensure their pets are fed on time and maintain a healthy routine.
+            </p>
+        </div>
+        <div id="options-title-page "class="flex flex-col sm:flex-row gap-4 mt-4">
+            <a href="/buy-product">
+                <div class="font-semibold cursor-pointer rounded-full transition-all duration-300 ease-in-out text-center border hover:border-gray-600 hover:bg-gray-100 border-gray-200 py-3 text-gray-900 px-5 bg-white">
+                    Buy our product 
+                </div>
+            </a>
+            <a href="/sign-in">
+                <div class=" font-semibold cursor-pointer rounded-full text-center transition-all duration-300 ease-in-out bg-gray-900 px-5 py-3 text-white hover:bg-gray-800">
+                    Sign in 
+                </div>
+            </a>
+        </div>
+    </section>
+    <section class="flex flex-col items-center text-center px-4 sm:px-8 md:px-16 lg:px-32 lg:mt-20 mb-16 space-y-6">
+        <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 text-center mb-6">
+            Introducing our Pet Feeder Smart System
+        </h2>
+
+        <p class="text-gray-600 sm:text-md text-center max-w-3xl">
+            Effortlessly schedule, monitor, and manage your pet’s meals with a smart device and web app. Control feeding times via Wi-Fi, get real-time updates, and customize routines to suit your pet.
+        </p>
+        <div class="w-full flex gap-10 flex-col lg:flex-row justify-center items-center mt-10 text-center">
+            <div class="h-100 w-full flex flex-col max-w-xl">
+                <div class="rounded-t-2xl h-50 bg-black">
+                    <img src="" alt="img1">
+                </div>
+                <div class="rounded-b-2xl bg-gray-100 h-50 flex items-center flex-col gap-3">
+                    <div class="text-black text-2xl w-full max-w-sm mt-3">
+                        Schedule control
+                    </div>
+                    <div class="text-gray-500 text-lg max-w-sm">
+                        Program your pet’s meals effortlessly and never miss a feeding again.                    
+                    </div>
+                    <div class="font-semibold flex justify-center items-center gap-1.5">
+                        <div>Try now</div> <div class="flex justify-center items-center h-5 w-5 bg-gray-900 border-1 rounded-full border-gray-900"><x-radix-arrow-top-right class="h-6 w-6 font-bold text-white p-0.5"/></div>
+                    </div>
+                </div>
+            </div>
+            <div class="h-100 w-full flex flex-col max-w-xl">
+                <div class="rounded-t-2xl h-50 bg-black">
+                    <img src="" alt="img1">
+                </div>
+                <div class="rounded-b-2xl bg-gray-100 h-50 flex items-center flex-col gap-3">
+                    <div class="text-black text-2xl w-full max-w-sm mt-3">
+                        Multiple Pets
+                    </div>
+                    <div class="text-gray-500 text-lg max-w-sm">
+                        Manage multiple feeders and pets easily from a single app.
+                    </div>
+                    <div class="font-semibold flex justify-center items-center gap-1.5">
+                        <div>Try now</div> <div class="flex justify-center items-center h-5 w-5 bg-gray-900 border-1 rounded-full border-gray-900"><x-radix-arrow-top-right class="h-6 w-6 font-bold text-white p-0.5"/></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="flex flex-col items-center text-center px-4 sm:px-8 md:px-16 lg:px-32 lg:mt-20 mb-16 space-y-6">
+        <div class="flex bg-white border-2 border-gray-900 rounded-full w-fit gap-3 py-4 px-6 mb-20 ">
+            <div class="hover:text-gray-700">
+               <a href="#software" class="focus:font-semibold focus:border-3 py-4 px-2 focus:border-gray-700 focus:text-gray-700 rounded-md transition-all duration-100">Using our app</a> 
+            </div>
+            <div class="hover:text-gray-700">
+               <a href="#a" class="focus:font-semibold focus:border-3 py-4 px-2 focus:border-gray-700 focus:text-gray-700 rounded-md transition-all duration-100"></a> 
+            </div>
+            <div class="hover:text-gray-700">
+               <a href="#hardware" class="focus:font-semibold focus:border-3 py-4 px-2 focus:border-gray-700 focus:text-gray-700 rounded-md transition-all duration-100">Using our Pet Feeder</a> 
+            </div>
+        </div>
+
+        <div id="software">
+            <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 text-center mb-6">
+                Enrich and personalize pet care.
+            </h2>
+            <p class="text-gray-600 sm:text-md text-center max-w-3xl mb-5">
+                Give pet owners control with tools that fit their routine – and ensure pets are fed on time, every time
+            </p>
+            <div>
+                <div>
+                    <div>
+                        Premium features that make pet care smarter and more convenient
+                    </div>
+                    <div>
+                        Dashboard Overview
+                    </div>
+                    <div>
+                        Schedule Control
+                    </div>
+                    <div>
+                        Portion Management
+                    </div>
+                    <div>
+                        Feeding History
+                    </div>
+                </div>
+                <div>
+
+                </div>
+            </div>
+        </div>
+        <div id="hardware">
+            b
+        </div>
+    </section>
+@endsection
+
+
+@extends('layouts.auth')
+
+@section('body')
+    <section class="flex flex-col items-center text-center px-4 sm:px-8 md:px-16 lg:px-32 lg:mt-20 mb-16 space-y-6">
+        <div class="flex bg-white drop-shadow-sm border-gray-100 rounded-full w-fit gap-3 py-3 px-10 mb-20 ">
+            <div class="hover:text-gray-700">
+               <a href="#software" class="text-gray-600 font-semibold hover:bg-gray-200 py-3 px-2 rounded-lg transition-all duration-300">Using our app</a> 
+            </div>
+        </div>
+
+        <div id="software">
+            <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 text-center mb-6">
+                Enrich and personalize pet care.
+            </h2>
+            <p class="text-gray-600 sm:text-md text-center max-w-3xl mb-5">
+                Give pet owners control with tools that fit their routine – and ensure pets are fed on time, every time
+            </p>
+            <div>
+                <div>
+                    <div>
+                        Premium features that make pet care smarter and more convenient
+                    </div>
+                    <div>
+                        Dashboard Overview
+                    </div>
+                    <div>
+                        Schedule Control
+                    </div>
+                    <div>
+                        Portion Management
+                    </div>
+                    <div>
+                        Feeding History
+                    </div>
+                </div>
+                <div>
+
+                </div>
+            </div>
+        </div>
+        <div id="hardware">
+            b
+        </div>
+    </section>
+@endsection
