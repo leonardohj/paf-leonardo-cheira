@@ -1,22 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    @vite('resources/css/app.css')
-    @yield('scripts')
-    <title>paf</title>
-    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
-</head>
-<body>
-    <!-- Header -->
-    <div class="border-b border-gray-300">
-        <x-header2/>
-    </div>
+@extends('layouts.auth')
 
-    <!-- Hero Section -->
-    <section class="flex flex-col items-center text-center px-4 sm:px-8 md:px-16 lg:px-32 mt-16 lg:mt-20 space-y-6">
+@section('body')
+    <section class="flex flex-col items-center text-center px-4 sm:px-8 md:px-16 lg:px-32  lg:mt-20 space-y-6">
         <img src="{{ asset('img/logo_paf.png') }}" alt="PAF Logo" class="h-12 lg:h-16">
         
         <h1 class="text-3xl sm:text-4xl lg:text-6xl font-bold text-gray-900 leading-tight">
@@ -31,9 +16,11 @@
             <div class="font-semibold cursor-pointer rounded-full transition-all duration-300 ease-in-out text-center border hover:border-gray-600 hover:bg-gray-100 border-gray-200 py-3 text-gray-900 px-5 bg-white">
                 Buy our product 
             </div>
+            <a href="/sign-in">
             <div class=" font-semibold cursor-pointer rounded-full text-center transition-all duration-300 ease-in-out bg-gray-900 px-5 py-3 text-white hover:bg-gray-800">
-                 Sign in 
+                Sign in 
             </div>
+            </a>
         </div>
     </section>
      <section class="mt-16 lg:mt-32 px-4 sm:px-8 md:px-16 lg:px-32 flex flex-col items-center">
@@ -80,4 +67,4 @@
         </div>
         </section>
 </div>
-</html>
+@endsection
