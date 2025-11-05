@@ -19,7 +19,7 @@
                     {{Str::upper(Str::substr(Auth::user()->name, 0, 1))}}
                 </div>
 
-                <div id="userInfo" class="absolute hidden">
+                <div id="userInfo" class="absolute hidden z-100">
                     <div class="fixed m-3 gap-3 right-0 top-16 p-4 w-full max-w-sm lg:max-w-lg bg-white shadow-sm rounded-xl">
                        <div class="relative flex font-semibold justify-center items-center">
                             <div class="text-center w-full">
@@ -38,15 +38,15 @@
                         <div class="text-lg text-center">
                             Olá, {{Auth::user()->name}}
                         </div>
-                       <form action="{{ route('logout') }}" method="POST">
-    @csrf
-    <button 
-        type="submit"
-        class="mt-3 w-full rounded-xl bg-gray-200 text-center py-2 cursor-pointer hover:bg-gray-300 transition-all duration-300"
-    >
-        Sair da conta
-    </button>
-</form>
+                    <form action="{{ route('logout') }}" method="POST">
+                        @csrf
+                        <button 
+                            type="submit"
+                            class="mt-3 w-full rounded-xl bg-gray-200 text-center py-2 cursor-pointer hover:bg-gray-300 transition-all duration-300"
+                        >
+                            Sair da conta
+                        </button>
+                    </form>
 
                     </div>
                 </div>

@@ -9,12 +9,17 @@
     <div class="flex gap-1 md:gap-2 lg:gap-3 text-nowrap">
 <div class="font-semibold cursor-pointer rounded-full transition-all duration-300 ease-in-out text-center border border-gray-200 hover:border-gray-600 hover:bg-gray-100 text-gray-900 bg-white 
   text-xs md:text-sm py-1.5 md:py-2 px-4 md:px-5 lg:px-6">
-  Buy our product
+  Comprar produto
 </div>
 <a href="{{ route('login') }}">
 <div class="font-semibold cursor-pointer rounded-full transition-all duration-300 ease-in-out text-center bg-gray-900 text-white hover:bg-gray-800 
   text-xs md:text-sm py-1.5 md:py-2 px-4 md:px-5 lg:px-6">
-  Log in
+  @if (Route::is('showRegister') || Route::is('landing'))
+      Entrar
+  @else
+      Registo
+  @endif
+
 </div>
 </a>
     </div>

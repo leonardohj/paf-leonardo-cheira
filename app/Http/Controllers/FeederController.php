@@ -8,6 +8,11 @@ use Illuminate\Support\Facades\Auth;
 
 class FeederController extends Controller
 {
+    public function index()
+    {
+    $feeders = Feeder::all();
+    return view('feeder.index', compact('feeders'));
+    }
     
     public function store(Request $request)
     {
@@ -21,7 +26,6 @@ class FeederController extends Controller
         Feeder::create($data);
 
         return redirect()->back();
-
     }
 
     public function linkingFeederUser(Request $request)
@@ -43,6 +47,24 @@ class FeederController extends Controller
         }
 
         return redirect()->back();
+    }
+    public function show(Request $request)
+    {
+        $user_id = $request->input('id_user');
 
+    if (Auth::check() && Auth::user()->id) {
+        $feeder_id = $request->input('feeder_id');
+        $feeder = Feeder::find($feeder_id);
+
+        if ($feeder) {
+            return view('feeder.show', compact('feeder'));
+        } else {
+            return redirect()->back()->with('error', 'Feeder not found.');
+        }
+    }
+
+    return redirect()->back();
+
+            
     }
 }

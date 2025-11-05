@@ -13,24 +13,30 @@
     <x-header />
     <div class="min-h-0 flex-1 flex ">
         <div id="sidebar" class="hidden md:flex flex-col justify-start items-center pt-3 pb-2 bg-gray-50 px-4 gap-y-6 w-16 hover:w-56 transition-all not-hover:duration-1000 duration-600 not-hover:w-16 ease-in-out group">
-        <div class="sidebar-item not-hover:duration-1000 flex items-center w-12 hover:bg-gray-200 rounded-full px-2 py-2 transition-all duration-300 ease-in-out group-hover:w-full overflow-hidden cursor-pointer">
-            <x-mdi-home-outline class="h-8 w-8 flex-shrink-0" />
-            <span class="text-gray-700 font-medium opacity-0 transform translate-x-[1rem] group-hover:opacity-100 transition-all duration-300 whitespace-nowrap">
-                Homepage
-            </span>
-        </div>
-        <div class="sidebar-item not-hover:duration-1000 flex items-center w-12 hover:bg-gray-200 rounded-full px-2 py-2 transition-all duration-300 ease-in-out group-hover:w-full overflow-hidden cursor-pointer">
+        <a href="{{ url('/') }}"
+   class="sidebar-item not-hover:duration-1000 flex items-center w-12 hover:bg-gray-200 rounded-full px-2 py-2 transition-all duration-300 ease-in-out group-hover:w-full overflow-hidden cursor-pointer
+   {{ Request::is('/') ? 'bg-gray-300' : '' }}">
+    <x-mdi-home-outline class="h-8 w-8 flex-shrink-0" />
+    <span class="text-gray-700 font-medium opacity-0 transform translate-x-[1rem] group-hover:opacity-100 transition-all duration-300 whitespace-nowrap">
+        Homepage
+    </span>
+</a>
+
+        <a href="{{ url('/schedule') }}" class="sidebar-item not-hover:duration-1000 flex items-center w-12 hover:bg-gray-200 rounded-full px-2 py-2 transition-all duration-300 ease-in-out group-hover:w-full overflow-hidden cursor-pointer
+        {{ Request::is('schedule') ? 'bg-gray-300' : '' }}">
             <x-mdi-calendar-clock-outline class="h-8 w-8 flex-shrink-0" />
             <span class="text-gray-700 font-medium opacity-0 transform translate-x-[1rem] group-hover:opacity-100 transition-all duration-300 whitespace-nowrap">
                     Horários
                 </span>
-            </div>
-        <div class="sidebar-item not-hover:duration-1000 flex items-center w-12 hover:bg-gray-200 rounded-full px-2 py-2 transition-all duration-300 ease-in-out group-hover:w-full overflow-hidden cursor-pointer">
+            </a>
+        <a href="{{ url('/feeder') }}"
+        class="sidebar-item not-hover:duration-1000 flex items-center w-12 hover:bg-gray-200 rounded-full px-2 py-2 transition-all duration-300 ease-in-out group-hover:w-full overflow-hidden cursor-pointer
+        {{ Request::is('feeder') ? 'bg-gray-300' : '' }}">
             <x-mdi-paw-outline class="h-8 w-8 flex-shrink-0" />
             <span class="text-gray-700 font-medium opacity-0 transform translate-x-[1rem] group-hover:opacity-100 transition-all duration-300 whitespace-nowrap">
-                    Alimentadores
-                </span>
-            </div>
+                Alimentadores
+            </span>
+        </a>
         <div class="sidebar-item not-hover:duration-1000 flex items-center w-12 hover:bg-gray-200 rounded-full px-2 py-2 transition-all duration-300 ease-in-out group-hover:w-full overflow-hidden cursor-pointer">
             <x-mdi-cog class="h-8 w-8 flex-shrink-0" />
             <span class="text-gray-700 font-medium opacity-0 transform translate-x-[1rem] group-hover:opacity-100 transition-all duration-300 whitespace-nowrap">

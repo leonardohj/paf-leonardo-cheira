@@ -14,10 +14,10 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        //$id_user = Auth::user()->id;
-        $feeders = Feeder::all();
-        // $feeders = DB::table('feeder')->where('id_user', $id_user)->first();
-        
+        $id_user = Auth::user()->id;
+
+        $feeders = Feeder::where('id_user', $id_user)->get();
+
         return view('index', compact('feeders'));
     }
 }
