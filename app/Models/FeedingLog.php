@@ -4,19 +4,20 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Schedule extends Model
+class FeedingLog extends Model
 {
-    protected $table = 'schedule';
+    protected $table = 'feeding_log';
+    protected $primaryKey = 'id';
+
     protected $fillable = [
         'id_feeder',
+        'date',
         'hour',
         'quantity',
-        'type',
-        'days',
+        'status',
+        'notes',
     ];
-    protected $casts = [
-        'days' => 'array',
-    ];
+
     public $timestamps = true;
 
     public function feeder()
@@ -24,4 +25,3 @@ class Schedule extends Model
         return $this->belongsTo(Feeder::class, 'id_feeder', 'id');
     }
 }
-

@@ -4,13 +4,16 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Feeder;
+use App\Models\Schedule;
+use App\Models\FeedingLog;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class FeederController extends Controller
 {
     public function index()
     {
-    $feeders = Feeder::all();
+    $feeders = Feeder::where('id_user', Auth::user()->id)->get();
     return view('feeder.index', compact('feeders'));
     }
     
@@ -30,7 +33,6 @@ class FeederController extends Controller
 
     public function linkingFeederUser(Request $request)
     {
-
         $id_user = Auth::user()->id;
         $validation = $request->validate([
             'code' => 'required|exists:feeder,code',
@@ -46,8 +48,9 @@ class FeederController extends Controller
             $feeder->save();
         }
 
-        return redirect()->back();
-    }
+			return redirect()->route('feeder');
+}
+
     public function show(Request $request)
     {
         $user_id = $request->input('id_user');
@@ -55,16 +58,57 @@ class FeederController extends Controller
     if (Auth::check() && Auth::user()->id) {
         $feeder_id = $request->input('feeder_id');
         $feeder = Feeder::find($feeder_id);
-
+        $logs = FeedingLog::where('id_feeder', $feeder_id)->orderByDesc('id')->take(3)->get();
         if ($feeder) {
-            return view('feeder.show', compact('feeder'));
+            return view('feeder.show', compact('feeder', 'logs'));
         } else {
             return redirect()->back()->with('error', 'Feeder not found.');
         }
     }
 
     return redirect()->back();
-
-            
     }
-}
+
+    public function activateManually($feeder, Request $request)
+    {
+				$horaAtivar = now()->addMinutes(1);
+				$validated = [
+					'hour' =>  $horaAtivar,
+					'quantity' => $request->input('quantity'),
+					'type' => 'deleteAfter1Use',
+				];
+				try {
+					Schedule::create(array_merge(
+							$validated, 
+							['id_feeder' => $feeder]
+					));
+				} catch (\Exception $e) {
+						var_dump($e->getMessage());
+				}
+		}
+
+		public function activate($feeder, Request $request)
+    {
+			$hora = now();
+			$data = now()->toDateString(); // '2025-11-30'
+			var_dump($data);
+			$values = [
+				'id_feeder' => $feeder,
+				'date' => $data,
+				'hour' => $hora,
+				'quantity' => 100,
+				'status' => 'OK',
+			];
+			try {
+					FeedingLog::create($values);
+					echo 'a';
+			} catch (\Throwable $th) {
+					echo 'b';
+
+			}
+	}
+		}
+
+
+
+

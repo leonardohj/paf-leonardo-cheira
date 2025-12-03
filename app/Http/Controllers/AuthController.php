@@ -54,7 +54,7 @@ class AuthController
         }
 
         throw ValidationException::withMessages([
-            'credentials' => 'Sorry, incorrect credentials'
+            'credentials' => 'Desculpa, não foi possivel fazer login, tenta novamente...'
         ]);
     }
 
