@@ -12,33 +12,51 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('feeder', function (Blueprint $table) {
-            $table->id()->primary();
-            $table->integer('id_user')->nullable(true);
-            $table->string('nome');
-            $table->string('code');
+            $table->id();
+            $table->unsignedBigInteger('id_user')->nullable();
+            $table->string('nome', 100);
+            $table->string('code', 50);
+            $table->boolean('status')->default(false);
+            $table->string('location')->nullable();
+            $table->string('pet_type')->nullable();
+            $table->timestamp('last_fed_at')->nullable();
+            $table->timestamps();
+            $table->foreign('id_user')->references('id')->on('users')->onDelete('set null');
         });
 
         Schema::create('schedule', function (Blueprint $table) {
-            $table->id()->primary();
-            $table->integer('id_feeder');
-            $table->time('time')->default('00:00:00');
+            $table->id();
+            $table->unsignedBigInteger('id_feeder');
+            $table->time('hour')->default('00:00:00');
+            $table->integer('quantity')->default(0);
+            $table->string('type');
+            $table->json('days')->nullable();
+            $table->timestamps();
+            $table->foreign('id_feeder')->references('id')->on('feeder')->onDelete('cascade');
         });
 
-        Schema::create('fodder', function (Blueprint $table) {
-            $table->id()->primary();
-            $table->integer('id_feeder');
+        Schema::create('feeding_log', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('id_feeder');
             $table->date('date');
+            $table->time('hour')->default('00:00:00');
+            $table->integer('quantity');
+            $table->string('status')->default('success');
+            $table->text('notes')->nullable();
+            $table->timestamps();
+            $table->foreign('id_feeder')->references('id')->on('feeder')->onDelete('cascade');
         });
     }
 
     /**
      * Reverse the migrations.
      */
+    
     public function down(): void
     {
-        Schema::dropIfExists('fodder');
-        Schema::dropIfExists('feeder');
-        Schema::dropIfExists('schedule');
-    }
+        Schema::dropIfExists('feeding_log');
+        Schema::dropIfExists('schedule');    
+        Schema::dropIfExists('feeder');      
+    }    
 };
 
