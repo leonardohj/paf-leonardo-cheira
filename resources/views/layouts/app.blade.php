@@ -5,11 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     @vite('resources/css/app.css')
+    @vite('resources/js/app.js')
     @yield('scripts')
     <title>paf</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
 </head>
-<body class="min-h-screen flex flex-col">
+<body class="max-h-screen h-screen flex flex-col">
+    @php
+    use App\Models\Feeder;
+    $feeders = Feeder::where('id_user', Auth::user()->id)->get();
+    @endphp
     <x-header />
     <div class="min-h-0 flex-1 flex ">
         <div id="sidebar" class="hidden md:flex flex-col justify-start items-center pt-3 pb-2 bg-gray-50 px-4 gap-y-6 w-16 hover:w-56 transition-all not-hover:duration-1000 duration-600 not-hover:w-16 ease-in-out group">
@@ -21,7 +27,7 @@
         Homepage
     </span>
 </a>
-
+@if(!$feeders->isEmpty())
         <a href="{{ url('/schedule') }}" class="sidebar-item not-hover:duration-1000 flex items-center w-12 hover:bg-gray-200 rounded-full px-2 py-2 transition-all duration-300 ease-in-out group-hover:w-full overflow-hidden cursor-pointer
         {{ Request::is('schedule') ? 'bg-gray-300' : '' }}">
             <x-mdi-calendar-clock-outline class="h-8 w-8 flex-shrink-0" />
@@ -43,15 +49,14 @@
                 Configurações
             </span>
         </div>
-
+@endif
         </div>
 
-        <div class="flex flex-col flex-1 h-full">
+        <div class="flex flex-col flex-1">
             <div class="hidden md:block bg-gray-50 w-full">
                 <div class="bg-white h-5 rounded-tl-full"></div>
             </div>
-            <div class="md:mb-0 mb-5"></div>
-            <div class="flex-1 overflow-auto">
+            <div class="flex-1 max-h-screen overflow-y-scroll">
                 @yield('body')
             </div>
         </div>

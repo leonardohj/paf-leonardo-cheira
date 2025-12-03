@@ -5,15 +5,11 @@
     <div class="flex w-full flex-wrap flex-row justify-center gap-3">
         <div class="items-center w-full max-w-md border border-gray-50 justify-between gap-6 p-4 bg-white rounded-2xl shadow-md">
 
-            <!-- Feeder Image -->
             <img src="{{ asset('img/img.webp') }}" alt="img" class="w-full max-h-45 mb-1 scale-x-[-1] rounded-xl">
 
-            <!-- Feeder Name -->
             <div class="text-2xl font-semibold text-center mb-3 text-gray-800">
                 {{ $feeder->nome }}
             </div>
-
-            <!-- Feeder Info (ID + Status) -->
 
             <div class="flex flex-col mb-6">
                 <div class="text-gray-600 font-medium">
@@ -36,11 +32,10 @@
             </div>
 
             <!-- Feeding Schedule Table -->
-            <div>
                 <div class="font-semibold mb-3">
                     Histórico de alimentações
                 </div>
-                <table class="min-w-full text-sm text-white">
+                <table class="min-w-full text-sm text-white mb-6">
                     <thead class="bg-gray-900 hover:bg-gray-800 rounded-t-full">
                         <tr>
                             <th class="py-2 px-4 border-b border-gray-900 rounded-tl-xl text-left">Data</th>
@@ -49,25 +44,23 @@
                         </tr>
                     </thead>
                     <tbody id="feedTableBody">
+                        @forelse($logs as $log)
                         <tr class="text-black">
-                            <td class="py-2 px-4 border-b border-gray-300">04/11/2025</td>
-                            <td class="py-2 px-4 border-b border-gray-300">09:00</td>
-                            <td class="py-2 px-4 border-b border-gray-300">150</td>
+                            <td class="py-2 px-4 border-b border-gray-300">{{ $log['date'] }}</td>
+                            <td class="py-2 px-4 border-b border-gray-300">{{ $log['hour'] }}</td>
+                            <td class="py-2 px-4 border-b border-gray-300">{{ $log['quantity'] }}</td>
                         </tr>
+                        @empty
                         <tr class="text-black">
-                            <td class="py-2 px-4 border-b border-gray-300">04/11/2025</td>
-                            <td class="py-2 px-4 border-b border-gray-300">13:00</td>
-                            <td class="py-2 px-4 border-b border-gray-300">100</td>
+                            <td colspan="3" class="py-2 px-4 border text-center border-gray-300 text-gray-500 text-sm">nao há logs</td>
                         </tr>
-                        <tr class="text-black">
-                            <td class="py-2 px-4 border-b border-gray-300">04/11/2025</td>
-                            <td class="py-2 px-4 border-b border-gray-300">21:00</td>
-                            <td class="py-2 px-4 border-b border-gray-300">100</td>
-                        </tr>
+                        @endforelse
                     </tbody>
                 </table>
-            </div>
-
+            <form method="POST" action="{{ route('feeder.activate', ['feeder' => $feeder->id])}}">
+                @csrf
+                <button type="submit" class="bg-gray-900 hover:bg-gray-800 transition-colors flex justify-center w-full text-white font-medium px-6 py-3 rounded-xl mb-6 cursor-pointer">Alimentar manualmente</button>
+            </form>
         </div>
     </div>
 </div>

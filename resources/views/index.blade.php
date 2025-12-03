@@ -1,228 +1,161 @@
 @extends('layouts.app')
 
 @section('body')
-<div class="px-5 py-2 w-full">
-  <div class="flex w-full flex-wrap justify-center gap-3">
+<div class="px-5 py-2 w-full ">
+  <div class="flex w-full flex-wrap justify-center gap-3 ">
     <div class="flex flex-col gap-8 mb-10 w-full items-center">
 
-      <!-- Alimentações Feitas Chart Section -->
-      <div class="relative w-full max-w-4xl mx-auto mt-10 px-4 flex items-center justify-center">
-        <!-- Left Button -->
-        <button id="prevFeeder" class="absolute left-0 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-full shadow transition">
-          ‹
-        </button>
-
-        <!-- Chart Container -->
-        <div class="w-full px-10">
-          <canvas id="feedingChart" class="w-full h-80"></canvas>
-        </div>
-
-        <!-- Right Button -->
-        <button id="nextFeeder" class="absolute right-0  bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-full shadow transition">
-          ›
-        </button>
-      </div>
-
-      <!-- Estatísticas -->
-      <div class="w-full max-w-5xl bg-white rounded-xl shadow-md p-6">
-        <h2 class="text-xl font-semibold mb-4 text-gray-800">Estatísticas Semanais/Mensais</h2>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-          <div class="bg-gray-100 rounded-lg p-4">
-            <p class="text-sm text-gray-500">Total Ração Libertada</p>
-            <p id="totalFeed" class="text-2xl font-bold text-gray-900">0g</p>
-          </div>
-          <div class="bg-gray-100 rounded-lg p-4">
-            <p class="text-sm text-gray-500">Média Diária</p>
-            <p id="avgFeed" class="text-2xl font-bold text-gray-900">0g</p>
-          </div>
-          <div class="bg-gray-100 rounded-lg p-4">
-            <p class="text-sm text-gray-500">Número de Alimentações</p>
-            <p id="feedCount" class="text-2xl font-bold text-gray-900">0</p>
-          </div>
-          <div class="bg-gray-100 rounded-lg p-4">
-            <p class="text-sm text-gray-500">Última Alimentação</p>
-            <p id="lastFeed" class="text-2xl font-bold text-gray-900">–</p>
-          </div>
+      @if (empty($feeders))
+      <div class="items-center w-full max-w-2xl border-gray-50 border justify-between gap-6 p-4 bg-white rounded-2xl shadow-md">
+        <div class="flex flex-col m-2 p-2 justify-between items-center text-center md:text-left md:items-start flex-1">
+          <h2 class="text-lg font-semibold text-gray-800">
+            Não tens um alimentador associado à tua conta?
+          </h2>
+          <p class="text-gray-600 mb-4">
+            Associa um alimentador para começares a monitorizar e gerir a alimentação facilmente.
+          </p>
+          <button id="buttonAssociateFeeder"
+            class="bg-black hover:bg-gray-800 transition-colors w-full text-white font-medium px-6 py-3 rounded-xl">
+            Associar alimentador
+          </button>
         </div>
       </div>
+      @else
 
-      <!-- Histórico -->
-      <div class="w-full max-w-5xl bg-white rounded-xl shadow-md p-6 overflow-x-auto">
-        <div class="flex justify-between items-center mb-4">
-          <h2 class="text-xl font-semibold text-gray-800">Histórico de Alimentações</h2>
-          <div class="flex gap-2">
-            <button id="exportBtn" class="px-3 py-1.5 text-sm rounded-full hover:bg-blue-700 text-white transition">
-            </button>
-            <button id="clearBtn" class="px-3 py-1.5 text-sm rounded-full hover:bg-red-700 text-white transition">
-            </button>
-          </div>
+      <div class="w-full flex justify-center items-center gap-2 mb-3">
+        <select id="monthSelector" class="border rounded-lg px-2 py-1">
+          @foreach($logsByMonth as $month => $weeks)
+            <option value="{{ $month }}">{{ ucfirst($month) }}</option>
+          @endforeach
+        </select>
+        <button onclick="changeLeft()" class="rounded-full w-10 h-10 bg-gray-200 text-lg font-bold">&lt;</button>
+        <div class="w-[70%] h-96">
+          <canvas id="myChart"></canvas>
         </div>
-
-        <table class="min-w-full text-sm text-gray-700">
-          <thead class="bg-gray-100 rounded-t-full">
-            <tr>
-              <th class="py-2 px-4 border-b border-gray-600 rounded-tl-xl text-left">Data</th>
-              <th class="py-2 px-4 border-b border-gray-600 text-left">Hora</th>
-              <th class="py-2 px-4 border-b border-gray-600 text-left">Quantidade (g)</th>
-              <th class="py-2 px-4 border-b border-gray-600 rounded-tr-xl text-left">Alimentador</th>
-            </tr>
-          </thead>
-          <tbody id="feedTableBody"></tbody>
-        </table>
+        <button onclick="changeRight()" class="rounded-full w-10 h-10 bg-gray-200 text-lg font-bold">&gt;</button>
       </div>
 
+      <div class="flex gap-5 p-3 bg-gray-50 rounded-xl flex-col w-full max-w-4xl">
+        <b class="text-lg">Estatísticas Mensais</b>
+        <div class="flex gap-3">
+          <div class="py-2 w-full px-5 bg-gray-100 rounded-xl text-center text-nowrap flex flex-col">
+            Total Ração Libertada
+            <b class="text-2xl">{{ $mensalStats["total"] }}</b>
+          </div>
+          <div class="py-2 w-full px-5 bg-gray-100 rounded-xl text-center text-nowrap flex flex-col">
+            Total Media Libertada
+            <b class="text-2xl">{{ $mensalStats["media"] }}</b>
+          </div>
+          <div class="py-2 w-full px-5 bg-gray-100 rounded-xl text-center text-nowrap flex flex-col">
+            Nº de Alimentações
+            <b class="text-2xl">{{ $mensalStats["alimentacoes"] }}</b>
+          </div>
+          <div class="py-2 w-full px-5 bg-gray-100 rounded-xl text-center text-nowrap flex flex-col">
+            Ultima Alimentação
+            <b class="text-2xl">{{ $mensalStats["last_alimentacao"] }}</b>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex gap-5 p-3 bg-gray-50 rounded-xl flex-col w-full max-w-4xl">
+        <b class="text-lg">Histórico de Alimentações</b>
+        <div class="flex w-full">
+          <table class="w-full">
+            <thead class="bg-gray-200 w-full">
+              <th class=" border-b rounded-tl-xl  border-gray-400">Data</th>
+              <th class="border-b  border-gray-400">Hora</th>
+              <th class="border-b py-1 border-gray-400">Quantidade (g)</th>
+              <th class="border-b rounded-tr-xl border-gray-400">Alimentador</th>
+            </thead>
+            @foreach($classicLogs as $log)
+            <tbody class="border-b mx-1">
+              <td class="py-1 px-2">{{ $log["date"] }}</td>
+              <td class="py-1 text-center">{{ $log["hour"] }}</td>
+              <td class="py-1 text-center">{{ $log["quantity"] }}</td>
+              <td class="py-1 text-center">{{ $log["alimentador"] }}</td>
+            </tbody>
+            @endforeach
+          </table>
+        </div>
+      </div>
+      @endif
     </div>
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-  // Dados simulados
-  const feeders = [
-    {
-      name: "Feeder 1",
-      labels: ["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom"],
-      data: [120, 100, 90, 110, 95, 130, 80],
-    },
-    {
-      name: "Feeder 2",
-      labels: ["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom"],
-      data: [90, 85, 100, 70, 120, 110, 95],
-    },
-    {
-      name: "Feeder 3",
-      labels: ["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom"],
-      data: [0, 0, 0, 0, 0, 0, 0],
+document.addEventListener('DOMContentLoaded', () => {
+    const buttonAssociateFeeder = document.getElementById('buttonAssociateFeeder');
+    if (buttonAssociateFeeder) {
+        buttonAssociateFeeder.addEventListener('click', openModalAssociateFeeder);
     }
-  ];
 
-  const feedData = [
-    { date: '2025-11-01', time: '08:00', amount: 120, feeder: 'Feeder 1' },
-    { date: '2025-11-01', time: '18:00', amount: 110, feeder: 'Feeder 2' },
-    { date: '2025-11-02', time: '09:00', amount: 130, feeder: 'Feeder 1' },
-    { date: '2025-11-03', time: '19:00', amount: 115, feeder: 'Feeder 2' },
-  ];
+    const monthSelector = document.getElementById('monthSelector');
+    let selectedMonth = monthSelector.value;
 
-  let currentFeeder = 0;
-  const ctx = document.getElementById('feedingChart').getContext('2d');
-  const tableBody = document.getElementById('feedTableBody');
+    let weekIndex = 0;
+    const data = @json($logsByMonth);
 
-  // 🔧 Chart container fix to avoid overlapping modals
-  ctx.canvas.parentElement.style.position = 'relative';
-  ctx.canvas.parentElement.style.zIndex = '0';
-  ctx.canvas.style.zIndex = '0';
-  ctx.canvas.style.position = 'relative';
+    function getWeeksForMonth(month) {
+        return Object.keys(data[month]).sort((a,b)=>a-b);
+    }
 
-  // Chart inicial
-  let feedingChart = new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels: feeders[currentFeeder].labels,
-      datasets: [{
-        label: feeders[currentFeeder].name,
-        data: feeders[currentFeeder].data,
-        backgroundColor: 'rgba(75, 85, 99, 0.8)',
-        borderRadius: 6
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false, // ✅ avoids chart resizing issues
-      scales: {
-        y: {
-          beginAtZero: true,
-          title: { display: true, text: 'Quantidade (g)' }
+    let weeks = getWeeksForMonth(selectedMonth);
+
+    const ctx = document.getElementById('myChart').getContext('2d');
+
+    const myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'],
+            datasets: [{
+                label: 'Gramas totais',
+                data: data[selectedMonth][weeks[weekIndex]],
+                backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
         },
-        x: {
-          title: { display: true, text: 'Dia da Semana' }
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: { y: { beginAtZero: true } }
         }
-      },
-      plugins: {
-        legend: { display: false },
-        title: {
-          display: true,
-          text: feeders[currentFeeder].name + " - Alimentações Feitas"
+    });
+
+    function updateChart() {
+        weeks = getWeeksForMonth(selectedMonth);
+        if (weekIndex >= weeks.length) weekIndex = weeks.length - 1;
+        const week = weeks[weekIndex];
+        myChart.data.datasets[0].data = data[selectedMonth][week];
+        myChart.update();
+    }
+
+    monthSelector.addEventListener('change', () => {
+        selectedMonth = monthSelector.value;
+        weekIndex = 0;
+        updateChart();
+    });
+
+    window.changeLeft = function() {
+        if (weekIndex > 0) {
+            weekIndex--;
+            updateChart();
         }
-      },
-      layout: {
-        padding: { top: 10, bottom: 10 }
-      }
     }
-  });
 
-  // Atualiza gráfico e tabela
-  function updateChart() {
-    feedingChart.data.labels = feeders[currentFeeder].labels;
-    feedingChart.data.datasets[0].data = feeders[currentFeeder].data;
-    feedingChart.data.datasets[0].label = feeders[currentFeeder].name;
-    feedingChart.options.plugins.title.text = feeders[currentFeeder].name + " - Alimentações Feitas";
-    feedingChart.update();
-
-    const currentName = feeders[currentFeeder].name;
-    const filtered = feedData.filter(f => f.feeder === currentName);
-
-    // Atualizar tabela
-    tableBody.innerHTML = filtered.map(f => `
-      <tr>
-        <td class="py-2 px-4 border-b border-gray-300">${f.date}</td>
-        <td class="py-2 px-4 border-b border-gray-300">${f.time}</td>
-        <td class="py-2 px-4 border-b border-gray-300">${f.amount}g</td>
-        <td class="py-2 px-4 border-b border-gray-300">${f.feeder}</td>
-      </tr>
-    `).join('');
-
-    // Atualizar estatísticas
-    const total = filtered.reduce((sum, f) => sum + f.amount, 0);
-    const avg = filtered.length ? total / filtered.length : 0;
-    const lastFeed = filtered[filtered.length - 1];
-    document.getElementById('totalFeed').innerText = total + 'g';
-    document.getElementById('avgFeed').innerText = avg.toFixed(1) + 'g';
-    document.getElementById('feedCount').innerText = filtered.length;
-    document.getElementById('lastFeed').innerText = lastFeed ? lastFeed.date + ' ' + lastFeed.time : '–';
-  }
-
-  // Botões
-  document.getElementById('prevFeeder').addEventListener('click', () => {
-    currentFeeder = (currentFeeder - 1 + feeders.length) % feeders.length;
-    updateChart();
-  });
-
-  document.getElementById('nextFeeder').addEventListener('click', () => {
-    currentFeeder = (currentFeeder + 1) % feeders.length;
-    updateChart();
-  });
-
-  // Exportar CSV
-  document.getElementById('exportBtn').addEventListener('click', () => {
-    const currentName = feeders[currentFeeder].name;
-    const filtered = feedData.filter(f => f.feeder === currentName);
-    const csv = [
-      ['Data', 'Hora', 'Quantidade', 'Alimentador'],
-      ...filtered.map(f => [f.date, f.time, f.amount, f.feeder])
-    ].map(e => e.join(",")).join("\n");
-
-    const blob = new Blob([csv], { type: 'text/csv' });
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = 'historico_alimentacoes.csv';
-    a.click();
-  });
-
-  // Limpar
-  document.getElementById('clearBtn').addEventListener('click', () => {
-    if (confirm("Deseja realmente limpar o histórico?")) {
-      tableBody.innerHTML = "";
-      feedingChart.data.datasets[0].data = [];
-      feedingChart.update();
-      document.getElementById('totalFeed').innerText = "0g";
-      document.getElementById('avgFeed').innerText = "0g";
-      document.getElementById('feedCount').innerText = "0";
-      document.getElementById('lastFeed').innerText = "–";
+    window.changeRight = function() {
+        if (weekIndex < weeks.length - 1) {
+            weekIndex++;
+            updateChart();
+        }
     }
-  });
 
-  // Inicializar
-  updateChart();
+    window.addEventListener('resize', () => {
+        myChart.resize();
+    });
+
+    updateChart();
+});
 </script>
-
 @endsection
