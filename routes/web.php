@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ApiController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GramsController;
 use App\Http\Controllers\ScheduleController;
@@ -25,8 +26,16 @@ Route::middleware('auth')->group(function (){
     Route::post('/feeder/show', [FeederController::class, 'show'])->name('feeder.show');
     Route::post('/feeder', [FeederController::class, 'store'])->name('feeder.create');
     Route::post('/feeder/link', [FeederController::class, 'linkingFeederUser'])->name('feeder.linkUser');
+    Route::post('/feeder/activate/{feeder}', [FeederController::class, 'activate'])->name('feeder.activate');
     Route::get('/schedule', [ScheduleController::class, 'index'])->name('schedule');
+    Route::post('/schedule/store/{feeder}', [ScheduleController::class, 'store'])->name('schedule.store');
 });
+
+Route::get('/api/schedule', [ApiController::class, 'GetSchedules'])->name('api.schedule');
+Route::get('/api/feeder', [ApiController::class, 'GetFeeders'])->name('api.schedule');
+
+Route::post('/api/schedule', [ApiController::class, 'store'])->name('api.schedule');
+
 
 Route::get('/admin', function(){
     $feeders = Feeder::all();
