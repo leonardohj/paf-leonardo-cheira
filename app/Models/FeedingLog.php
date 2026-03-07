@@ -4,22 +4,22 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Schedule extends Model
+class FeedingLog extends Model
 {
-    protected $table = 'schedule';
+    protected $table = 'feeding_log';
 
     public $timestamps = false;
 
     protected $fillable = [
         'id_feeder',
-        'time',
         'quantity',
-        'type',
-        'days'
+        'status',
+        'notes',
+        'date'
     ];
 
     protected $casts = [
-        'days' => 'array'
+        'date' => 'date'
     ];
 
     public function feeder()

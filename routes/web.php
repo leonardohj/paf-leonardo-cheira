@@ -22,7 +22,7 @@ Route::middleware('auth')->group(function (){
     Route::get('/', [DashboardController::class, 'index'])->name('home');
     Route::post('/changeVariables', [GramsController::class, 'store'])->name('changeVariables');
     Route::get('/feeder', [FeederController::class, 'index'])->name('feeder');
-    Route::post('/feeder/show', [FeederController::class, 'show'])->name('feeder.show');
+    Route::get('/feeder/show/{feeder_id}', [FeederController::class, 'show'])->name('feeder.show');
     Route::post('/feeder', [FeederController::class, 'store'])->name('feeder.create');
     Route::post('/feeder/link', [FeederController::class, 'linkingFeederUser'])->name('feeder.linkUser');
     Route::get('/schedule', [ScheduleController::class, 'index'])->name('schedule');

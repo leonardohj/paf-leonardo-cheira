@@ -4,13 +4,14 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Feeder;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Auth;
 
 class FeederController extends Controller
 {
     public function index()
     {
-    $feeders = Feeder::all();
+        $feeders = Feeder::where('id_user', Auth::id())->get();
     return view('feeder.index', compact('feeders'));
     }
     
@@ -19,8 +20,11 @@ class FeederController extends Controller
         $lastFeeder = Feeder::latest('id')->value('id');
 
         $data = [
-            'nome' => 'Feeder ' . ($lastFeeder ? $lastFeeder + 1 : 1),
-            'code' =>  hexdec(uniqid()) 
+            'name' => 'Feeder ' . ($lastFeeder ? $lastFeeder + 1 : 1),
+            'code' =>  hexdec(uniqid()),
+            'status' => false,
+            'pet_type' => 'none',
+
         ];
         
         Feeder::create($data);
@@ -48,23 +52,21 @@ class FeederController extends Controller
 
         return redirect()->back();
     }
-    public function show(Request $request)
+
+    public function show(Request $request, $feeder_id)
     {
-        $user_id = $request->input('id_user');
+        try {
+            // Eager load feedingLogs
+            $feeder = Feeder::with(['feedingLogs' => function ($query) {
+                $query->orderBy('date', 'desc'); // latest first
+            }])
+            ->where('id', $feeder_id)
+            ->where('id_user', Auth::id()) // ensures user owns this feeder
+            ->firstOrFail();
 
-    if (Auth::check() && Auth::user()->id) {
-        $feeder_id = $request->input('feeder_id');
-        $feeder = Feeder::find($feeder_id);
-
-        if ($feeder) {
             return view('feeder.show', compact('feeder'));
-        } else {
-            return redirect()->back()->with('error', 'Feeder not found.');
-        }
-    }
-
-    return redirect()->back();
-
-            
+        } catch (ModelNotFoundException $e) {
+            return redirect()->route('feeder.index')->with('error', 'Feeder not found or not yours.');
+        }            
     }
 }

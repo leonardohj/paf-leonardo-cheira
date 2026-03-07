@@ -14,19 +14,28 @@ return new class extends Migration
         Schema::create('feeder', function (Blueprint $table) {
             $table->id()->primary();
             $table->integer('id_user')->nullable(true);
-            $table->string('nome');
+            $table->string('name')->nullable(true);
+            $table->boolean('status')->default(false);
             $table->string('code');
+            $table->string('pet_type')->nullable(true);
+            $table->date('last_fed_at')->nullable(true);
         });
 
         Schema::create('schedule', function (Blueprint $table) {
             $table->id()->primary();
             $table->integer('id_feeder');
-            $table->time('time')->default('00:00:00');
+            $table->time('time');
+             $table->integer('quantity');
+             $table->string('type');
+             $table->json('days')->nullable(true);
         });
 
-        Schema::create('fodder', function (Blueprint $table) {
+        Schema::create('feeding_log', function (Blueprint $table) {
             $table->id()->primary();
             $table->integer('id_feeder');
+            $table->integer('quantity');
+            $table->integer('status');
+            $table->string('notes')->nullable(true);
             $table->date('date');
         });
     }
@@ -36,7 +45,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('fodder');
+        Schema::dropIfExists('feeding_log');
         Schema::dropIfExists('feeder');
         Schema::dropIfExists('schedule');
     }

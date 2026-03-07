@@ -1,74 +1,61 @@
 @extends('layouts.app')
 
 @section('body')
-<div class="px-5 py-2 w-full">
-    <div class="flex w-full flex-wrap flex-row justify-center gap-3">
-        <div class="items-center w-full max-w-md border border-gray-50 justify-between gap-6 p-4 bg-white rounded-2xl shadow-md">
+<div class="px-5 py-6 w-full flex justify-center">
+    <div class="w-full max-w-3xl bg-white rounded-2xl shadow-md p-6 flex flex-col gap-6">
 
-            <!-- Feeder Image -->
-            <img src="{{ asset('img/img.webp') }}" alt="img" class="w-full max-h-45 mb-1 scale-x-[-1] rounded-xl">
-
-            <!-- Feeder Name -->
-            <div class="text-2xl font-semibold text-center mb-3 text-gray-800">
-                {{ $feeder->nome }}
-            </div>
-
-            <!-- Feeder Info (ID + Status) -->
-
-            <div class="flex flex-col mb-6">
-                <div class="text-gray-600 font-medium">
-                    <span class="font-semibold">ID:</span> {{ $feeder->id }}
-                </div>
+        <!-- Feeder Header -->
+        <div class="flex flex-col items-center gap-4">
+            <img src="{{ asset('img/en/placeholder.jpg') }}" alt="Feeder Image" class="w-full max-h-60 rounded-xl object-cover">
+            <div class="text-2xl font-semibold text-gray-800">{{ $feeder->nome }}</div>
+            <div class="flex gap-6 text-gray-600 font-medium">
+                <div><span class="font-semibold">ID:</span> {{ $feeder->id }}</div>
                 <div class="flex items-center gap-2">
-                    <span class="font-semibold text-gray-600">Status:</span>
-                    <div class="flex items-center gap-2">
+                    <span class="font-semibold">Status:</span>
+                    <div class="flex items-center gap-1">
                         <div class="h-3 w-3 rounded-full bg-green-500 animate-pulse"></div>
                         <span class="text-green-600 font-semibold">Online</span>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <!-- Horários Button -->
-            <div class="bg-gray-900 hover:bg-gray-800 transition-colors flex w-full text-white font-medium px-6 py-3 rounded-xl mb-6 cursor-pointer">
-                <div>Horários</div>
-                <div class="flex-1"></div>
-                <div><x-radix-arrow-right class="h-6 w-6 text-white" /></div>
-            </div>
+        <!-- Horários Button -->
+        <button class="flex items-center justify-between w-full bg-gray-900 hover:bg-gray-800 text-white font-medium px-6 py-3 rounded-xl transition">
+            <span>Horários</span>
+            <x-radix-arrow-right class="h-5 w-5 text-white" />
+        </button>
 
-            <!-- Feeding Schedule Table -->
-            <div>
-                <div class="font-semibold mb-3">
-                    Histórico de alimentações
-                </div>
-                <table class="min-w-full text-sm text-white">
-                    <thead class="bg-gray-900 hover:bg-gray-800 rounded-t-full">
+        <!-- Feeding Logs Table -->
+        <div class="flex flex-col gap-3">
+            <div class="font-semibold text-gray-800 text-lg">Histórico de Alimentações</div>
+            <div class="overflow-x-auto rounded-xl border border-gray-200 shadow-sm">
+                <table class="min-w-full text-sm text-gray-700">
+                    <thead class="bg-gray-100">
                         <tr>
-                            <th class="py-2 px-4 border-b border-gray-900 rounded-tl-xl text-left">Data</th>
-                            <th class="py-2 px-4 border-b border-gray-900 text-left">Hora</th>
-                            <th class="py-2 px-4 border-b border-gray-900 text-left rounded-tr-xl">Quantidade (g)</th>
+                            <th class="py-2 px-4 text-left font-medium border-b border-gray-300 rounded-tl-lg">Data</th>
+                            <th class="py-2 px-4 text-left font-medium border-b border-gray-300">Hora</th>
+                            <th class="py-2 px-4 text-left font-medium border-b border-gray-300 rounded-tr-lg">Quantidade (g)</th>
                         </tr>
                     </thead>
-                    <tbody id="feedTableBody">
-                        <tr class="text-black">
-                            <td class="py-2 px-4 border-b border-gray-300">04/11/2025</td>
-                            <td class="py-2 px-4 border-b border-gray-300">09:00</td>
-                            <td class="py-2 px-4 border-b border-gray-300">150</td>
+                    <tbody>
+                        @forelse($feeder->feedingLogs as $log)
+                        <tr>
+                            <td class="py-2 px-4 border-b border-gray-200">{{ $log->date->format('d/m/Y') }}</td>
+                            <td class="py-2 px-4 border-b border-gray-200">{{ $log->date->format('H:i') }}</td>
+                            <td class="py-2 px-4 border-b border-gray-200">{{ $log->quantity }}</td>
                         </tr>
-                        <tr class="text-black">
-                            <td class="py-2 px-4 border-b border-gray-300">04/11/2025</td>
-                            <td class="py-2 px-4 border-b border-gray-300">13:00</td>
-                            <td class="py-2 px-4 border-b border-gray-300">100</td>
+                        @empty
+                        <tr>
+                            <td colspan="3" class="py-4 text-center text-gray-400">Nenhum histórico disponível</td>
                         </tr>
-                        <tr class="text-black">
-                            <td class="py-2 px-4 border-b border-gray-300">04/11/2025</td>
-                            <td class="py-2 px-4 border-b border-gray-300">21:00</td>
-                            <td class="py-2 px-4 border-b border-gray-300">100</td>
-                        </tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>
-
         </div>
+        {{-- <a href="{{ route('feeding_log.store') }}">Criar Histórico</a> --}}
+
     </div>
 </div>
 @endsection

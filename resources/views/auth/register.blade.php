@@ -11,10 +11,10 @@
                 @csrf
                 <div class="px-6 flex flex-col justify-center items-center gap-4">
                     <div class="text-3xl font-semibold w-full mb-5 text-left">Registo</div>
-                <x-input name="name" label="Nome" type="text" placeholder="Enter your username"/>
-                <x-input name="email" label="Email" type="email" placeholder="Enter your email address"/>
-                <x-input name="password" label="Palavra passe" type="password" placeholder="Enter your password"/>
-                <x-input name="password_confirmation" label="Confirmar palavra passe" type="password" placeholder="Confirm your password"/>
+<x-input name="name" label="Nome" type="text" placeholder="Enter your username" autocomplete="name"/>
+<x-input name="email" label="Email" type="email" placeholder="Enter your email address" autocomplete="email"/>
+<x-input name="password" label="Palavra passe" type="password" placeholder="Enter your password" autocomplete="new-password"/>
+<x-input name="password_confirmation" label="Confirmar palavra passe" type="password" placeholder="Confirm your password" autocomplete="new-password"/>
 
                 <button type="submit" class="text-white py-2 px-3 bg-gray-900 w-full rounded-full cursor-pointer text-center mt-5 transition hover:bg-gray-800">
                     Registo

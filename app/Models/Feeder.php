@@ -5,20 +5,39 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 class Feeder extends Model
-{    
-    protected $rules = [
-        'nome' => 'required|string|max:255',
-        'status' => 'required|string|max:255',
-    ];
-
+{
     protected $table = 'feeder';
-    
-    protected $primaryKey = 'id';
-    
+
+    public $timestamps = false;
+
     protected $fillable = [
         'id_user',
-        'nome',
-        'code'
+        'name',
+        'status',
+        'code',
+        'pet_type',
+        'last_fed_at'
     ];
-    public $timestamps = false;
+
+    protected $casts = [
+        'last_fed_at' => 'date'
+    ];
+
+    // Relationships
+
+    public function feedingLogs()
+    {
+        return $this->hasMany(FeedingLog::class, 'id_feeder');
+    }
+
+    public function schedules()
+    {
+        return $this->hasMany(Schedule::class, 'id_feeder');
+    }
+
+    // Belongs to User
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'id_user');
+    }
 }

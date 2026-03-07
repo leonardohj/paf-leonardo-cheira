@@ -3,21 +3,23 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
-use App\Models\Schedule;
 use App\Models\Feeder;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\Validator;
-use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
     public function index()
     {
-        $id_user = Auth::user()->id;
+        $userId = Auth::id();
 
-        $feeders = Feeder::where('id_user', $id_user)->get();
+        // Get all feeders of this user with their feeding logs
+        $feeders = Feeder::with('feedingLogs')
+            ->where('id_user', $userId)
+            ->get();
 
-        return view('index', compact('feeders'));
+        // Optionally, flatten all logs into one collection
+        $feedingLogs = $feeders->pluck('feedingLogs')->flatten();
+
+        return view('dashboard.index', compact('feeders', 'feedingLogs'));
     }
 }

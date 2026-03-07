@@ -7,17 +7,14 @@
 
       <!-- Alimentações Feitas Chart Section -->
       <div class="relative w-full max-w-4xl mx-auto mt-10 px-4 flex items-center justify-center">
-        <!-- Left Button -->
         <button id="prevFeeder" class="absolute left-0 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-full shadow transition">
           ‹
         </button>
 
-        <!-- Chart Container -->
         <div class="w-full px-10">
           <canvas id="feedingChart" class="w-full h-80"></canvas>
         </div>
 
-        <!-- Right Button -->
         <button id="nextFeeder" class="absolute right-0  bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-full shadow transition">
           ›
         </button>
@@ -51,9 +48,11 @@
         <div class="flex justify-between items-center mb-4">
           <h2 class="text-xl font-semibold text-gray-800">Histórico de Alimentações</h2>
           <div class="flex gap-2">
-            <button id="exportBtn" class="px-3 py-1.5 text-sm rounded-full hover:bg-blue-700 text-white transition">
+            <button id="exportBtn" class="px-3 py-1.5 text-sm rounded-full bg-blue-600 hover:bg-blue-700 text-white transition">
+              Exportar CSV
             </button>
-            <button id="clearBtn" class="px-3 py-1.5 text-sm rounded-full hover:bg-red-700 text-white transition">
+            <button id="clearBtn" class="px-3 py-1.5 text-sm rounded-full bg-red-600 hover:bg-red-700 text-white transition">
+              Limpar
             </button>
           </div>
         </div>
@@ -74,114 +73,90 @@
     </div>
   </div>
 </div>
-
+@php
+$feedersJson = $feeders->map(function($feeder) {
+    return [
+        'name' => $feeder->name,
+        'logs' => $feeder->feedingLogs->map(function($log) {
+            return [
+                'date' => $log->date->format('Y-m-d'),
+                'time' => $log->date->format('H:i'),
+                'amount' => $log->quantity,
+                'feeder' => $log->feeder->name ?? '' // optional safety
+            ];
+        })->toArray(),
+    ];
+})->toArray();
+@endphp
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-  // Dados simulados
-  const feeders = [
-    {
-      name: "Feeder 1",
-      labels: ["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom"],
-      data: [120, 100, 90, 110, 95, 130, 80],
-    },
-    {
-      name: "Feeder 2",
-      labels: ["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom"],
-      data: [90, 85, 100, 70, 120, 110, 95],
-    },
-    {
-      name: "Feeder 3",
-      labels: ["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom"],
-      data: [0, 0, 0, 0, 0, 0, 0],
-    }
-  ];
-
-  const feedData = [
-    { date: '2025-11-01', time: '08:00', amount: 120, feeder: 'Feeder 1' },
-    { date: '2025-11-01', time: '18:00', amount: 110, feeder: 'Feeder 2' },
-    { date: '2025-11-02', time: '09:00', amount: 130, feeder: 'Feeder 1' },
-    { date: '2025-11-03', time: '19:00', amount: 115, feeder: 'Feeder 2' },
-  ];
+const feeders = @json($feedersJson);
 
   let currentFeeder = 0;
   const ctx = document.getElementById('feedingChart').getContext('2d');
   const tableBody = document.getElementById('feedTableBody');
 
-  // 🔧 Chart container fix to avoid overlapping modals
-  ctx.canvas.parentElement.style.position = 'relative';
-  ctx.canvas.parentElement.style.zIndex = '0';
-  ctx.canvas.style.zIndex = '0';
-  ctx.canvas.style.position = 'relative';
-
-  // Chart inicial
-  let feedingChart = new Chart(ctx, {
+  const chartConfig = {
     type: 'bar',
     data: {
-      labels: feeders[currentFeeder].labels,
-      datasets: [{
-        label: feeders[currentFeeder].name,
-        data: feeders[currentFeeder].data,
+      labels: [], datasets: [{
+        label: '',
+        data: [],
         backgroundColor: 'rgba(75, 85, 99, 0.8)',
         borderRadius: 6
       }]
     },
     options: {
       responsive: true,
-      maintainAspectRatio: false, // ✅ avoids chart resizing issues
+      maintainAspectRatio: false,
       scales: {
-        y: {
-          beginAtZero: true,
-          title: { display: true, text: 'Quantidade (g)' }
-        },
-        x: {
-          title: { display: true, text: 'Dia da Semana' }
-        }
+        y: { beginAtZero: true, title: { display: true, text: 'Quantidade (g)' } },
+        x: { title: { display: true, text: 'Dia da Semana' } }
       },
-      plugins: {
-        legend: { display: false },
-        title: {
-          display: true,
-          text: feeders[currentFeeder].name + " - Alimentações Feitas"
-        }
-      },
-      layout: {
-        padding: { top: 10, bottom: 10 }
-      }
+      plugins: { legend: { display: false }, title: { display: true, text: '' } }
     }
-  });
+  };
 
-  // Atualiza gráfico e tabela
+  const feedingChart = new Chart(ctx, chartConfig);
+
   function updateChart() {
-    feedingChart.data.labels = feeders[currentFeeder].labels;
-    feedingChart.data.datasets[0].data = feeders[currentFeeder].data;
-    feedingChart.data.datasets[0].label = feeders[currentFeeder].name;
-    feedingChart.options.plugins.title.text = feeders[currentFeeder].name + " - Alimentações Feitas";
+    const feeder = feeders[currentFeeder];
+    const logs = feeder.logs;
+
+    // Aggregate data by day of week
+    const days = ['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'];
+    const dataByDay = days.map(day => {
+      return logs
+        .filter(log => new Date(log.date).getDay() === (days.indexOf(day)+1)%7)
+        .reduce((sum, log) => sum + log.amount, 0);
+    });
+
+    feedingChart.data.labels = days;
+    feedingChart.data.datasets[0].data = dataByDay;
+    feedingChart.data.datasets[0].label = feeder.name;
+    feedingChart.options.plugins.title.text = `${feeder.name} - Alimentações Feitas`;
     feedingChart.update();
 
-    const currentName = feeders[currentFeeder].name;
-    const filtered = feedData.filter(f => f.feeder === currentName);
-
-    // Atualizar tabela
-    tableBody.innerHTML = filtered.map(f => `
+    // Update table
+    tableBody.innerHTML = logs.map(log => `
       <tr>
-        <td class="py-2 px-4 border-b border-gray-300">${f.date}</td>
-        <td class="py-2 px-4 border-b border-gray-300">${f.time}</td>
-        <td class="py-2 px-4 border-b border-gray-300">${f.amount}g</td>
-        <td class="py-2 px-4 border-b border-gray-300">${f.feeder}</td>
+        <td class="py-2 px-4 border-b border-gray-300">${log.date}</td>
+        <td class="py-2 px-4 border-b border-gray-300">${log.time}</td>
+        <td class="py-2 px-4 border-b border-gray-300">${log.amount}g</td>
+        <td class="py-2 px-4 border-b border-gray-300">${log.feeder}</td>
       </tr>
     `).join('');
 
-    // Atualizar estatísticas
-    const total = filtered.reduce((sum, f) => sum + f.amount, 0);
-    const avg = filtered.length ? total / filtered.length : 0;
-    const lastFeed = filtered[filtered.length - 1];
+    // Update stats
+    const total = logs.reduce((sum, log) => sum + log.amount, 0);
+    const avg = logs.length ? total / logs.length : 0;
+    const last = logs[logs.length-1];
     document.getElementById('totalFeed').innerText = total + 'g';
     document.getElementById('avgFeed').innerText = avg.toFixed(1) + 'g';
-    document.getElementById('feedCount').innerText = filtered.length;
-    document.getElementById('lastFeed').innerText = lastFeed ? lastFeed.date + ' ' + lastFeed.time : '–';
+    document.getElementById('feedCount').innerText = logs.length;
+    document.getElementById('lastFeed').innerText = last ? `${last.date} ${last.time}` : '–';
   }
 
-  // Botões
   document.getElementById('prevFeeder').addEventListener('click', () => {
     currentFeeder = (currentFeeder - 1 + feeders.length) % feeders.length;
     updateChart();
@@ -192,13 +167,11 @@
     updateChart();
   });
 
-  // Exportar CSV
   document.getElementById('exportBtn').addEventListener('click', () => {
-    const currentName = feeders[currentFeeder].name;
-    const filtered = feedData.filter(f => f.feeder === currentName);
+    const logs = feeders[currentFeeder].logs;
     const csv = [
-      ['Data', 'Hora', 'Quantidade', 'Alimentador'],
-      ...filtered.map(f => [f.date, f.time, f.amount, f.feeder])
+      ['Data','Hora','Quantidade','Alimentador'],
+      ...logs.map(log => [log.date, log.time, log.amount, log.feeder])
     ].map(e => e.join(",")).join("\n");
 
     const blob = new Blob([csv], { type: 'text/csv' });
@@ -208,9 +181,8 @@
     a.click();
   });
 
-  // Limpar
   document.getElementById('clearBtn').addEventListener('click', () => {
-    if (confirm("Deseja realmente limpar o histórico?")) {
+    if(confirm("Deseja realmente limpar o histórico?")) {
       tableBody.innerHTML = "";
       feedingChart.data.datasets[0].data = [];
       feedingChart.update();
@@ -221,8 +193,6 @@
     }
   });
 
-  // Inicializar
   updateChart();
 </script>
-
 @endsection

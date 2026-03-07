@@ -11,16 +11,11 @@
   text-xs md:text-sm py-1.5 md:py-2 px-4 md:px-5 lg:px-6">
   Comprar produto
 </div>
-<a href="{{ route('login') }}">
-<div class="font-semibold cursor-pointer rounded-full transition-all duration-300 ease-in-out text-center bg-gray-900 text-white hover:bg-gray-800 
-  text-xs md:text-sm py-1.5 md:py-2 px-4 md:px-5 lg:px-6">
-  @if (Route::is('showRegister') || Route::is('landing'))
-      Entrar
-  @else
-      Registo
-  @endif
-
-</div>
+<a href="{{ Route::is('showRegister') || Route::is('landing') ? route('showLogin') : route('showRegister') }}">
+  <div class="font-semibold cursor-pointer rounded-full transition-all duration-300 ease-in-out text-center
+      bg-gray-900 text-white hover:bg-gray-800 text-xs md:text-sm py-1.5 md:py-2 px-4 md:px-5 lg:px-6">
+    {{ Route::is('showRegister') || Route::is('landing') ? 'Entrar' : 'Registo' }}
+  </div>
 </a>
     </div>
   </div>
