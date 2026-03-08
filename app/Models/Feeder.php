@@ -6,9 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Feeder extends Model
 {
-    protected $table = 'feeder';
+    protected $table = 'feeders';
 
-    public $timestamps = false;
+    public $timestamps = true;
 
     protected $fillable = [
         'id_user',
@@ -16,26 +16,27 @@ class Feeder extends Model
         'status',
         'code',
         'pet_type',
-        'last_fed_at'
+        'last_fed_at',
+        'device_token',
     ];
 
     protected $casts = [
-        'last_fed_at' => 'date'
+        'last_fed_at' => 'date',
+        'status' => 'boolean',
     ];
 
     // Relationships
 
     public function feedingLogs()
     {
-        return $this->hasMany(FeedingLog::class, 'id_feeder');
+        return $this->hasMany(FeedingLog::class, 'feeder_id');
     }
 
     public function schedules()
     {
-        return $this->hasMany(Schedule::class, 'id_feeder');
+        return $this->hasMany(Schedule::class, 'feeder_id');
     }
 
-    // Belongs to User
     public function user()
     {
         return $this->belongsTo(User::class, 'id_user');

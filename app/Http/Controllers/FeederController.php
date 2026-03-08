@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Feeder;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class FeederController extends Controller
 {
@@ -23,7 +24,7 @@ class FeederController extends Controller
             'name' => 'Feeder ' . ($lastFeeder ? $lastFeeder + 1 : 1),
             'code' =>  hexdec(uniqid()),
             'status' => false,
-            'pet_type' => 'none',
+            'device_token' =>  Str::random(60)
 
         ];
         
@@ -37,7 +38,7 @@ class FeederController extends Controller
 
         $id_user = Auth::user()->id;
         $validation = $request->validate([
-            'code' => 'required|exists:feeder,code',
+            'code' => 'required|exists:feeders,code',
         ]);
 
         $code = $request->input('code');

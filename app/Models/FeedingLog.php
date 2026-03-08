@@ -6,12 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class FeedingLog extends Model
 {
-    protected $table = 'feeding_log';
+    protected $table = 'feeding_logs';
 
     public $timestamps = false;
 
     protected $fillable = [
-        'id_feeder',
+        'feeder_id',
         'quantity',
         'status',
         'notes',
@@ -19,11 +19,11 @@ class FeedingLog extends Model
     ];
 
     protected $casts = [
-        'date' => 'date'
+        'date' => 'date',
     ];
 
     public function feeder()
     {
-        return $this->belongsTo(Feeder::class, 'id_feeder');
+        return $this->belongsTo(Feeder::class, 'feeder_id');
     }
 }

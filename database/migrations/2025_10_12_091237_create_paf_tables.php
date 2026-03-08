@@ -6,48 +6,44 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
-        Schema::create('feeder', function (Blueprint $table) {
-            $table->id()->primary();
-            $table->integer('id_user')->nullable(true);
-            $table->string('name')->nullable(true);
+        Schema::create('feeders', function (Blueprint $table) {
+            $table->id();
+            $table->integer('id_user')->nullable();
+            $table->string('name')->nullable();
             $table->boolean('status')->default(false);
             $table->string('code');
-            $table->string('pet_type')->nullable(true);
-            $table->date('last_fed_at')->nullable(true);
+            $table->string('pet_type')->nullable();
+            $table->date('last_fed_at')->nullable();
+            $table->string('device_token')->unique();
+            $table->timestamps(); 
         });
 
-        Schema::create('schedule', function (Blueprint $table) {
-            $table->id()->primary();
-            $table->integer('id_feeder');
+        Schema::create('schedules', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('feeder_id')->constrained('feeders')->cascadeOnDelete(); // better than id_feeder
             $table->time('time');
-             $table->integer('quantity');
-             $table->string('type');
-             $table->json('days')->nullable(true);
+            $table->integer('quantity');
+            $table->string('type');
+            $table->json('days')->nullable();
+            $table->timestamps();
         });
 
-        Schema::create('feeding_log', function (Blueprint $table) {
-            $table->id()->primary();
-            $table->integer('id_feeder');
+        Schema::create('feeding_logs', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('feeder_id')->constrained('feeders')->cascadeOnDelete();
             $table->integer('quantity');
             $table->integer('status');
-            $table->string('notes')->nullable(true);
+            $table->string('notes')->nullable();
             $table->date('date');
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
-        Schema::dropIfExists('feeding_log');
-        Schema::dropIfExists('feeder');
-        Schema::dropIfExists('schedule');
+        Schema::dropIfExists('feeding_logs');
+        Schema::dropIfExists('schedules');
+        Schema::dropIfExists('feeders');
     }
 };
-

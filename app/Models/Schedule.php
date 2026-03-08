@@ -6,12 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class Schedule extends Model
 {
-    protected $table = 'schedule';
+    protected $table = 'schedules';
 
-    public $timestamps = false;
+    public $timestamps = true;
 
     protected $fillable = [
-        'id_feeder',
+        'feeder_id',
         'time',
         'quantity',
         'type',
@@ -24,6 +24,6 @@ class Schedule extends Model
 
     public function feeder()
     {
-        return $this->belongsTo(Feeder::class, 'id_feeder');
+        return $this->belongsTo(Feeder::class, 'feeder_id');
     }
 }

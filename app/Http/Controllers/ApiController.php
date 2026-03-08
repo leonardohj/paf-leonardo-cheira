@@ -9,62 +9,78 @@ use App\Models\FeedingLog;
 
 class ApiController extends Controller
 {
-    protected $Username;
-    protected $Password;
-    public function __construct()
+    /**
+     * Authenticate device using Bearer token
+     */
+    private function authenticate(Request $request)
     {
-        $this->Username = 'api1234';
-        $this->Password = '1234';
+        $token = $request->bearerToken();
+
+        if (!$token) {
+            return null;
+        }
+
+        return Feeder::where('device_token', $token)->first();
     }
 
-    public function GetSchedules(Request $request)
+    /**
+     * Get schedules for authenticated feeder
+     */
+    public function getSchedules(Request $request)
     {
-        $feederId = $request->query('feeder_id');
-        $username = $request->query('username');
-        $password = $request->query('password');
+        $feeder = $this->authenticate($request);
 
-        if (!$feederId || !$username || !$password) {
-            return response()->json(['error' => 'feeder_id, username and password are required'], 400);
+        if (!$feeder) {
+            return response()->json([
+                'error' => 'Invalid or missing device token'
+            ], 401);
         }
 
-        if ($username !== $this->Username || $password !== $this->Password) {
-            return response()->json(['error' => 'Invalid credentials'], 401);
-        }
-
-        $schedules = Schedule::where('id_feeder', $feederId)->get();
+        $schedules = Schedule::where('id_feeder', $feeder->id)->get();
 
         return response()->json($schedules);
     }
 
-    public function GetFeeders(Request $request)
+    /**
+     * Get feeder info
+     */
+    public function getFeeder(Request $request)
     {
-        $feederId = $request->query('feeder_id');
-    
-        if (!$feederId) {
-            return response()->json(['error' => 'feeder_id is required'], 400);
-        }
-    
-        $feeder = Feeder::find($feederId);
-    
+        $feeder = $this->authenticate($request);
+
         if (!$feeder) {
-            return response()->json(['error' => 'Feeder not found'], 404);
+            return response()->json([
+                'error' => 'Invalid or missing device token'
+            ], 401);
         }
-    
+
         return response()->json($feeder);
     }
 
+    /**
+     * Store feeding log from device
+     */
     public function store(Request $request)
     {
+        $feeder = $this->authenticate($request);
+
+        if (!$feeder) {
+            return response()->json([
+                'error' => 'Invalid or missing device token'
+            ], 401);
+        }
+
         $validated = $request->validate([
-            'id_feeder' => 'required|integer|exists:feeders,id',
             'date' => 'required|string',
             'hour' => 'required|string',
-            'quantity' => 'required|int',
+            'quantity' => 'required|integer',
             'status' => 'required|string'
         ]);
-        
-       $feeding_log = FeedingLog::create($validated);
 
-        return response()->json($feeding_log, 201);
+        $validated['id_feeder'] = $feeder->id;
+
+        $feedingLog = FeedingLog::create($validated);
+
+        return response()->json($feedingLog, 201);
     }
 }
