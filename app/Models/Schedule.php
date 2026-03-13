@@ -19,7 +19,7 @@ class Schedule extends Model
     ];
 
     protected $casts = [
-        'days' => 'array'
+        'days' => 'array',
     ];
 
     public function feeder()

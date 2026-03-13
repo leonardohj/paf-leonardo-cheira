@@ -55,7 +55,5 @@
   </div>
 </div>
 
-<!-- x-modal component -->
-<x-modal />
 
 @endsection

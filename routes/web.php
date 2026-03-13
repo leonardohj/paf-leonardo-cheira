@@ -26,6 +26,10 @@ Route::middleware('auth')->group(function (){
     Route::post('/feeder', [FeederController::class, 'store'])->name('feeder.create');
     Route::post('/feeder/link', [FeederController::class, 'linkingFeederUser'])->name('feeder.linkUser');
     Route::get('/schedule', [ScheduleController::class, 'index'])->name('schedule');
+        Route::post('/schedule/store/{feeder_id}', [ScheduleController::class, 'store'])
+        ->name('schedule.store');
+        Route::put('/schedule/{schedule}', [ScheduleController::class, 'update'])
+        ->name('schedule.update');
 });
 
 Route::get('/admin', function(){
@@ -34,5 +38,5 @@ Route::get('/admin', function(){
 });
 
 Route::fallback(function () {
-    return view('404');
+    return view('404.404');
 });

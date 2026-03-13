@@ -1,176 +1,235 @@
 <!DOCTYPE html>
 <html lang="en" x-data="{ sidebarOpen: false }">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-@vite(['resources/css/app.css', 'resources/js/app.js'])
-</head>
-    @yield('scripts')
+
     <title>paf</title>
+
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @yield('scripts')
 
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
 </head>
-<body class="min-h-screen flex flex-col">
 
-<div class="flex flex-col" x-data="{ showUserInfo: false }">
-    <!-- Header -->
-    <div id="mainHeader" class="h-16 flex items-center px-3 bg-gray-50">
-        <div class="text-black flex items-center">
-            <!-- Sidebar toggle -->
-            <div
-                class="p-3 rounded-full hover:bg-gray-100 cursor-pointer"
-                 @click="sidebarOpen = !sidebarOpen"
-            >
-                <x-radix-hamburger-menu class="w-8 h-8"/>
+<body class="h-screen flex flex-col overflow-hidden">
+
+    <div class="flex flex-col flex-shrink-0" x-data="{ showUserInfo: false }">
+        <!-- Header -->
+        <div id="mainHeader" class="h-16 flex items-center px-3 bg-gray-50">
+            <div class="text-black flex items-center">
+                <!-- Sidebar toggle -->
+                <div class="p-3 rounded-full hover:bg-gray-100 cursor-pointer" @click="sidebarOpen = !sidebarOpen">
+                    <x-radix-hamburger-menu class="w-8 h-8" />
+                </div>
+                <img src="{{ asset('img/logo_paf.png') }}" alt="" class="h-8 lg:h-12">
             </div>
-            <img src="{{ asset('img/logo_paf.png') }}" alt="" class="h-8 lg:h-12">
-        </div>
 
-        <div class="flex-1"></div>
+            <div class="flex-1"></div>
 
-        <div>
             <div class="flex flex-row items-center gap-2">
-                <!-- Plus button -->
-<div
-    id="plusHeader"
-    class="p-3 rounded-full hover:bg-gray-100"
-    @click="$dispatch('open-modal-associate-feeder')"
->
-    <x-radix-plus class="w-6 h-6"/>
-</div>
 
-                <!-- User avatar -->
+                <!-- Plus -->
                 <div
-                    id="userImage"
-                    class="cursor-pointer text-white rounded-full h-10 w-10 bg-gray-600 flex justify-center items-center select-none"
-                    @click="showUserInfo = !showUserInfo"
-                >
-                    {{ Str::upper(Str::substr(Auth::user()->name, 0, 1)) }}
+                    class="p-3 rounded-full hover:bg-gray-100 cursor-pointer"
+                    @click="$dispatch('open-modal-associate-feeder')">
+                    <x-radix-plus class="w-6 h-6" />
                 </div>
 
-                <!-- User info popup -->
-                <div
-                    id="userInfo"
-                    class="absolute z-100"
-                    x-show="showUserInfo"
-                    x-transition
-                    @click.away="showUserInfo = false"
-                >
-                    <div class="fixed m-3 gap-3 right-0 top-16 p-4 w-full max-w-sm lg:max-w-lg bg-white shadow-sm rounded-xl">
-                        <div class="relative flex font-semibold justify-center items-center">
-                            <div class="text-center w-full">
-                                {{ Auth::user()->email }}
-                            </div>
-                            <div
-                                @click="showUserInfo = false"
-                                class="absolute right-0 top-1/2 -translate-y-1/2 cursor-pointer"
-                            >
-                                <x-radix-cross-2 class="h-6 w-6" />
-                            </div>
-                        </div>
-                        <div class="flex justify-center items-center">
-                            <div class="text-white text-xl rounded-full h-20 w-20 my-2 bg-gray-600 flex justify-center items-center select-none">
-                                {{ Str::upper(Str::substr(Auth::user()->name, 0, 1)) }}
-                            </div>
-                        </div>
-                        <div class="text-lg text-center">
-                            Olá, {{ Auth::user()->name }}
-                        </div>
-                        <form action="{{ route('logout') }}" method="POST">
-                            @csrf
-                            <button
-                                type="submit"
-                                class="mt-3 w-full rounded-xl bg-gray-200 text-center py-2 cursor-pointer hover:bg-gray-300 transition-all duration-300"
-                            >
-                                Sair da conta
-                            </button>
-                        </form>
+                <!-- USER -->
+                <div class="relative" x-data="{ showUserInfo:false }">
+
+                    <!-- avatar -->
+                    <div
+                        class="cursor-pointer text-white rounded-full h-10 w-10 bg-gray-600 flex justify-center items-center select-none"
+                        @click="showUserInfo = !showUserInfo">
+                        {{ Str::upper(Str::substr(Auth::user()->name,0,1)) }}
                     </div>
+
+                    <!-- dropdown -->
+                    <div
+                        x-cloak
+                        x-show="showUserInfo"
+                        x-transition.origin.top.right
+                        @click.outside="showUserInfo = false"
+                        class="absolute right-0 mt-3 w-80 z-50">
+
+                        <div class="bg-white shadow-lg rounded-xl p-4">
+
+                            <div class="relative flex font-semibold justify-center items-center">
+                                <div class="text-center w-full">
+                                    {{ Auth::user()->email }}
+                                </div>
+
+                                <div
+                                    @click="showUserInfo=false"
+                                    class="absolute right-0 cursor-pointer">
+                                    <x-radix-cross-2 class="h-5 w-5" />
+                                </div>
+                            </div>
+
+                            <div class="flex justify-center mt-3">
+                                <div class="text-white text-xl rounded-full h-16 w-16 bg-gray-600 flex items-center justify-center">
+                                    {{ Str::upper(Str::substr(Auth::user()->name,0,1)) }}
+                                </div>
+                            </div>
+
+                            <div class="text-center mt-2 text-lg">
+                                Olá, {{ Auth::user()->name }}
+                            </div>
+
+                            <form action="{{ route('logout') }}" method="POST" class="mt-4">
+                                @csrf
+
+                                <button
+                                    type="submit"
+                                    class="w-full rounded-xl bg-gray-200 py-2 hover:bg-gray-300 transition">
+                                    Sair da conta
+                                </button>
+                            </form>
+
+                        </div>
+
+                    </div>
+
                 </div>
 
             </div>
         </div>
     </div>
-</div>
 
-<x-modal/>
+    <x-modal />
 
-<div class="min-h-0 flex-1 flex">
+    <div class="flex-1 flex min-h-0 overflow-hidden">
 
-    <!-- SIDEBAR -->
-    <div
-        id="sidebar"
-        :class="{ 'hover': sidebarOpen }"
-        class="hidden md:flex flex-col justify-start items-center pt-3 pb-2 bg-gray-50 px-4 gap-y-6 w-16 hover:w-56 transition-all not-hover:duration-1000 duration-600 not-hover:w-16 ease-in-out group"
-    >
+        <!-- MOBILE SIDEBAR OVERLAY -->
+        <div class="fixed inset-0 z-40 bg-[rgba(0,0,0,0.5)] md:hidden"
+             x-show="sidebarOpen" x-transition.opacity
+             @click="sidebarOpen = false" x-cloak></div>
 
+        <!-- MOBILE SIDEBAR -->
+        <div :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'"
+             class="fixed inset-y-0 left-0 z-50 w-64 bg-gray-50 p-4 pt-0 flex flex-col gap-y-6 transform transition-transform duration-300 md:hidden min-h-screen">
 
-        <a href="{{ url('/') }}"
-           class="sidebar-item not-hover:duration-1000 flex items-center w-12 hover:bg-gray-200 rounded-full px-2 py-2 transition-all duration-300 ease-in-out group-hover:w-full overflow-hidden cursor-pointer
-           {{ Request::is('/') ? 'bg-gray-300' : '' }}">
-            <x-mdi-home-outline class="h-8 w-8 flex-shrink-0"/>
-            <span class="text-gray-700 font-medium opacity-0 transform translate-x-[1rem] group-hover:opacity-100 transition-all duration-300 whitespace-nowrap">
-                Homepage
-            </span>
-        </a>
+            <!-- Close button for mobile -->
+            <div class="flex h-16 items-center">
+                <button @click="sidebarOpen = false" class="p-2 rounded-full hover:bg-gray-200">
+                    <x-radix-cross-2 class="h-8 w-8" />
+                </button>
+                <img src="{{ asset('img/logo_paf.png') }}" alt="" class="h-8 lg:h-12 ml-2">
+            </div>
 
-        <a href="{{ url('/schedule') }}"
-           class="sidebar-item not-hover:duration-1000 flex items-center w-12 hover:bg-gray-200 rounded-full px-2 py-2 transition-all duration-300 ease-in-out group-hover:w-full overflow-hidden cursor-pointer
-           {{ Request::is('schedule') ? 'bg-gray-300' : '' }}">
-            <x-mdi-calendar-clock-outline class="h-8 w-8 flex-shrink-0"/>
-            <span class="text-gray-700 font-medium opacity-0 transform translate-x-[1rem] group-hover:opacity-100 transition-all duration-300 whitespace-nowrap">
-                Horários
-            </span>
-        </a>
+            <!-- Mobile menu items -->
+            <a href="{{ url('/') }}" class="sidebar-item flex items-center w-full gap-2 px-2 py-2 rounded-full hover:bg-gray-200">
+                <x-mdi-home-outline class="h-8 w-8 flex-shrink-0" />
+                <span class="text-gray-700 font-medium">Homepage</span>
+            </a>
 
-        <a href="{{ url('/feeder') }}"
-           class="sidebar-item not-hover:duration-1000 flex items-center w-12 hover:bg-gray-200 rounded-full px-2 py-2 transition-all duration-300 ease-in-out group-hover:w-full overflow-hidden cursor-pointer
-           {{ Request::is('feeder') ? 'bg-gray-300' : '' }}">
-            <x-mdi-paw-outline class="h-8 w-8 flex-shrink-0"/>
-            <span class="text-gray-700 font-medium opacity-0 transform translate-x-[1rem] group-hover:opacity-100 transition-all duration-300 whitespace-nowrap">
-                Alimentadores
-            </span>
-        </a>
+            <a href="{{ url('/schedule') }}" class="sidebar-item flex items-center w-full gap-2 px-2 py-2 rounded-full hover:bg-gray-200">
+                <x-mdi-calendar-clock-outline class="h-8 w-8 flex-shrink-0" />
+                <span class="text-gray-700 font-medium">Horários</span>
+            </a>
 
-        <div class="sidebar-item not-hover:duration-1000 flex items-center w-12 hover:bg-gray-200 rounded-full px-2 py-2 transition-all duration-300 ease-in-out group-hover:w-full overflow-hidden cursor-pointer">
-            <x-mdi-cog class="h-8 w-8 flex-shrink-0"/>
-            <span class="text-gray-700 font-medium opacity-0 transform translate-x-[1rem] group-hover:opacity-100 transition-all duration-300 whitespace-nowrap">
-                Configurações
-            </span>
+            <a href="{{ url('/feeder') }}" class="sidebar-item flex items-center w-full gap-2 px-2 py-2 rounded-full hover:bg-gray-200">
+                <x-mdi-paw-outline class="h-8 w-8 flex-shrink-0" />
+                <span class="text-gray-700 font-medium">Alimentadores</span>
+            </a>
+
+            <div class="sidebar-item flex items-center w-full gap-2 px-2 py-2 rounded-full hover:bg-gray-200 cursor-pointer">
+                <x-mdi-cog class="h-8 w-8 flex-shrink-0" />
+                <span class="text-gray-700 font-medium">Configurações</span>
+            </div>
+        </div>
+
+        <!-- DESKTOP SIDEBAR -->
+        <div id="sidebar" :class="{ 'hover': sidebarOpen }"
+            class="hidden md:flex flex-col justify-start items-center pt-3 pb-2 bg-gray-50 px-4 gap-y-6 w-16 hover:w-56 transition-all not-hover:duration-1000 duration-600 not-hover:w-16 ease-in-out group min-h-screen">
+
+            <a href="{{ url('/') }}"
+               class="sidebar-item not-hover:duration-1000 flex items-center w-12 hover:bg-gray-200 rounded-full px-2 py-2 transition-all duration-300 ease-in-out group-hover:w-full overflow-hidden cursor-pointer
+               {{ Request::is('/') ? 'bg-gray-300' : '' }}">
+                <x-mdi-home-outline class="h-8 w-8 flex-shrink-0" />
+                <span class="text-gray-700 font-medium opacity-0 transform translate-x-[1rem] group-hover:opacity-100 transition-all duration-300 whitespace-nowrap">
+                    Homepage
+                </span>
+            </a>
+
+            <a href="{{ url('/schedule') }}"
+               class="sidebar-item not-hover:duration-1000 flex items-center w-12 hover:bg-gray-200 rounded-full px-2 py-2 transition-all duration-300 ease-in-out group-hover:w-full overflow-hidden cursor-pointer
+               {{ Request::is('schedule') ? 'bg-gray-300' : '' }}">
+                <x-mdi-calendar-clock-outline class="h-8 w-8 flex-shrink-0" />
+                <span class="text-gray-700 font-medium opacity-0 transform translate-x-[1rem] group-hover:opacity-100 transition-all duration-300 whitespace-nowrap">
+                    Horários
+                </span>
+            </a>
+
+            <a href="{{ url('/feeder') }}"
+               class="sidebar-item not-hover:duration-1000 flex items-center w-12 hover:bg-gray-200 rounded-full px-2 py-2 transition-all duration-300 ease-in-out group-hover:w-full overflow-hidden cursor-pointer
+               {{ Request::is('feeder') ? 'bg-gray-300' : '' }}">
+                <x-mdi-paw-outline class="h-8 w-8 flex-shrink-0" />
+                <span class="text-gray-700 font-medium opacity-0 transform translate-x-[1rem] group-hover:opacity-100 transition-all duration-300 whitespace-nowrap">
+                    Alimentadores
+                </span>
+            </a>
+
+            <div class="sidebar-item not-hover:duration-1000 flex items-center w-12 hover:bg-gray-200 rounded-full px-2 py-2 transition-all duration-300 ease-in-out group-hover:w-full overflow-hidden cursor-pointer">
+                <x-mdi-cog class="h-8 w-8 flex-shrink-0" />
+                <span class="text-gray-700 font-medium opacity-0 transform translate-x-[1rem] group-hover:opacity-100 transition-all duration-300 whitespace-nowrap">
+                    Configurações
+                </span>
+            </div>
+
+        </div>
+
+        <!-- CONTENT -->
+        <div class="flex flex-col flex-1 min-h-0 overflow-hidden">
+
+            <div class="hidden md:block bg-gray-50 w-full">
+                <div class="bg-white h-5 rounded-tl-full"></div>
+            </div>
+
+            <div class="flex-1 overflow-y-auto p-4">
+                @if(session('success'))
+                    <div class="mb-4 p-4 bg-green-100 text-green-800 rounded-lg shadow">
+                        {{ session('success') }}
+                    </div>
+                @endif
+
+                @if($errors->any())
+                    <div class="mb-4 p-4 bg-red-100 text-red-800 rounded-lg shadow">
+                        <ul class="list-disc pl-5">
+                            @foreach($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+                
+                @yield('body')
+            </div>
+
         </div>
 
     </div>
 
-    <!-- CONTENT -->
-    <div class="flex flex-col flex-1 h-full">
-        <div class="hidden md:block bg-gray-50 w-full">
-            <div class="bg-white h-5 rounded-tl-full"></div>
-        </div>
-        <div class="md:mb-0 mb-5"></div>
-        <div class="flex-1 overflow-auto">
-            @yield('body')
-        </div>
-    </div>
+    <style>
+        #sidebar.hover {
+            width: 14rem;
+            transition: width 0.3s ease-in-out;
+        }
 
-</div>
+        #sidebar.hover .sidebar-item {
+            width: 100%;
+        }
 
-<style>
-/* Force hover state for manual toggle */
-#sidebar.hover {
-    width: 14rem; /* same as w-56 */
-    transition: width 0.3s ease-in-out;
-}
-
-/* Show labels when sidebar is forced open */
-#sidebar.hover .sidebar-item {
-    width: 100%;
-}
-#sidebar.hover .sidebar-item span {
-    opacity: 1;
-}
-</style>
+        #sidebar.hover .sidebar-item span {
+            opacity: 1;
+        }
+    </style>
 
 </body>
+
 </html>
