@@ -11,48 +11,59 @@ use Throwable;
 
 class ScheduleController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $feeders = Feeder::where('id_user', Auth::id())->get();
-
-        $schedules = Schedule::whereIn('feeder_id', $feeders->pluck('id'))->get();
-        
-        return view('schedule.index', compact('feeders', 'schedules'));
-    }
-    public function store(Request $request)
-    {
-        // Trim time to H:i
-        $request->merge([
-            'time' => substr($request->time, 0, 5)
-        ]);
+        $query = Feeder::where('id_user', Auth::id());
     
-        $validated = $request->validate([
-            'time'      => 'required|date_format:H:i',
-            'quantity'  => 'required|integer|min:1',
-            'type'      => 'required|in:always,specific',
-            'days'      => 'nullable|array',
-            'days.*'    => 'in:Seg,Ter,Qua,Qui,Sex,Sáb,Dom',
-        ]);
-    
-        try {
-            // Check that feeder belongs to user
-            $feeder = Feeder::where('id', $validated['feeder_id'])
-                ->where('id_user', Auth::id())
-                ->firstOrFail();
-    
-            // Convert days to null if type is 'always'
-            if ($validated['type'] === 'always') {
-                $validated['days'] = null;
-            }
-    
-            // Create schedule
-            Schedule::create($validated);
-    
-            echo 'a';
-        } catch (Throwable $e) {
-            return $e;
+        if ($request->filled('search')) {
+            $query->where('name', 'like', '%' . $request->search . '%');
         }
+    
+        $feeders = $query->with('schedules')->get();
+    
+        return view('schedule.index', compact('feeders'));
     }
+    public function search(Request $request)
+    {
+
+    }
+    public function store(Request $request, $feeder_id)
+{
+    // Trim time to H:i
+    $request->merge([
+        'time' => substr($request->time, 0, 5)
+    ]);
+
+    $validated = $request->validate([
+        'time'      => 'required|date_format:H:i',
+        'quantity'  => 'required|integer|min:1',
+        'type'      => 'required|in:always,specific',
+        'days'      => 'nullable|array',
+        'days.*'    => 'in:Seg,Ter,Qua,Qui,Sex,Sáb,Dom',
+    ]);
+
+    try {
+        // Check that feeder belongs to user
+        $feeder = Feeder::where('id', $feeder_id)
+            ->where('id_user', Auth::id())
+            ->firstOrFail();
+
+        // Convert days to null if type is 'always'
+        if ($validated['type'] === 'always') {
+            $validated['days'] = null;
+        }
+
+        // Add feeder_id to validated data
+        $validated['feeder_id'] = $feeder_id;
+
+        // Create schedule
+        Schedule::create($validated);
+
+        echo 'a';
+    } catch (Throwable $e) {
+        return $e;
+    }
+}
     public function update(Request $request, $schedule_id)
 {
     $validated = $request->validate([

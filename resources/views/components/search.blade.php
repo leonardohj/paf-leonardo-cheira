@@ -3,6 +3,7 @@
     'name' => 'search',
     'type' => 'text',
     'placeholder' => 'Search...',
+    'value' => null,
 ])
 
 <div class="w-full">
@@ -14,11 +15,11 @@
         <input 
             name="{{ $name }}" 
             id="{{ $name }}" 
-            type="search" 
+            type="{{ $type }}" 
             placeholder="{{ $placeholder }}" 
-            value="{{ old($name) }}" 
+            value="{{ old($name, $value ?? '') }}" {{-- USE OLD OR VALUE --}}
             {{ $attributes->merge(['autocomplete' => 'off']) }}
-            {{ $attributes->merge(['class' => 'outline-0 w-full max-w-2xl py-1 bg-transparent']) }}
+            class="outline-0 w-full max-w-2xl py-1 bg-transparent"
         >
 
         @isset($slot)

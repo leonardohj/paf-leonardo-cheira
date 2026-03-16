@@ -21,7 +21,7 @@
         </div>
 
         <!-- Horários Button -->
-        <a href="{{ route('schedule', ['feeder_id' => $feeder->id]) }}"class="flex items-center justify-between w-full bg-gray-900 hover:bg-gray-800 text-white font-medium px-6 py-3 rounded-xl transition">
+        <a href="{{ route('schedule', ['search' => $feeder->name]) }}"class="flex items-center justify-between w-full bg-gray-900 hover:bg-gray-800 text-white font-medium px-6 py-3 rounded-xl transition">
             <span>Horários</span>
             <x-radix-arrow-right class="h-5 w-5 text-white" />
         </a>
