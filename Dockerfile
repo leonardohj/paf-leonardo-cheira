@@ -22,7 +22,7 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /var/www/html
 
 # Copia composer
-COPY composer.json composer.lock ./
+COPY composer.json composer.lock
 
 # Instala Composer
 RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
