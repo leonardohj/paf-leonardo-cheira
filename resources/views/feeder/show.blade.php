@@ -7,7 +7,7 @@
         <!-- Feeder Header -->
         <div class="flex flex-col items-center gap-4">
             <img src="{{ asset('img/en/placeholder.jpg') }}" alt="Feeder Image" class="w-full max-h-60 rounded-xl object-cover">
-            <div class="text-2xl font-semibold text-gray-800">{{ $feeder->nome }}</div>
+            <div class="text-2xl font-semibold text-gray-800">{{ $feeder->name }}</div>
             <div class="flex gap-6 text-gray-600 font-medium">
                 <div><span class="font-semibold">ID:</span> {{ $feeder->id }}</div>
                 <div class="flex items-center gap-2">

@@ -1,0 +1,33 @@
+# Node modules
+node_modules
+npm-debug.log
+yarn-error.log
+
+# Composer
+vendor
+composer.lock
+
+# Env
+.env
+.env.*.backup
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+storage/logs
+storage/framework/cache
+storage/framework/sessions
+storage/framework/views
+
+# Vite build output
+public/build
+
+# IDE files
+.idea
+.vscode
+
+# Other caches
+.cache
+.phpunit.result.cache
